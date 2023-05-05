@@ -1,7 +1,7 @@
 package app.constant;
 
 public enum UserLevel {
-    Nursing_Staff,
-    Doctor,
-    ADMIN
+    nursing_staff,
+    doctor,
+    admin
 }
