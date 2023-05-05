@@ -30,7 +30,7 @@
                     <AttributeDesignator AttributeId="urn:oasis:names:tc:xacml:1.0:subject:subject-id"
                                          DataType="http://www.w3.org/2001/XMLSchema#string"
                                          Category="urn:oasis:names:tc:xacml:1.0:subject-category:access-subject"
-                                         MustBePresent="false"/>
+                                         MustBePresent="true"/>
                 </Apply>
             </Apply>
         </Condition>
@@ -47,7 +47,7 @@
                     <AttributeDesignator AttributeId="urn:oasis:names:tc:xacml:1.0:subject:subject-id"
                                          DataType="http://www.w3.org/2001/XMLSchema#string"
                                          Category="urn:oasis:names:tc:xacml:1.0:subject-category:access-subject"
-                                         MustBePresent="false"/>
+                                         MustBePresent="true"/>
                 </Apply>
 
                 <Apply FunctionId="urn:oasis:names:tc:xacml:1.0:function:time-in-range">
@@ -82,7 +82,7 @@
                 <AttributeDesignator AttributeId="urn:oasis:names:tc:xacml:1.0:subject:subject-id"
                                      DataType="http://www.w3.org/2001/XMLSchema#string"
                                      Category="urn:oasis:names:tc:xacml:1.0:subject-category:access-subject"
-                                     MustBePresent="false"/>
+                                     MustBePresent="true"/>
             </Apply>
         </Condition>
     </Rule>
