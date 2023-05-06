@@ -1,5 +1,5 @@
 <Policy xmlns="urn:oasis:names:tc:xacml:3.0:core:schema:wd-17"
-        PolicyId="medical-record-policy"
+        PolicyId="medical-record-policy-delete"
         Version="1.0"
         RuleCombiningAlgId="urn:oasis:names:tc:xacml:3.0:rule-combining-algorithm:deny-overrides">
 
@@ -20,18 +20,17 @@
     </Target>
 
     <!-- Rule for admins-->
-    <Rule RuleId="doctor_access_rule" Effect="Permit">
+    <Rule RuleId="admin_access_rule" Effect="Permit">
         <Description>admin can delete the patient's record at anytime and locations</Description>
         <Condition>
-            <Apply FunctionId="urn:oasis:names:tc:xacml:1.0:function:and">
-
-                <Apply FunctionId="urn:oasis:names:tc:xacml:1.0:function:string-equal">
-                    <AttributeValue DataType="http://www.w3.org/2001/XMLSchema#string">admin</AttributeValue>
+            <Apply FunctionId="urn:oasis:names:tc:xacml:1.0:function:string-equal">
+                <Apply FunctionId="urn:oasis:names:tc:xacml:1.0:function:string-one-and-only">
                     <AttributeDesignator AttributeId="urn:oasis:names:tc:xacml:1.0:subject:subject-id"
                                          DataType="http://www.w3.org/2001/XMLSchema#string"
                                          Category="urn:oasis:names:tc:xacml:1.0:subject-category:access-subject"
                                          MustBePresent="true"/>
                 </Apply>
+                <AttributeValue DataType="http://www.w3.org/2001/XMLSchema#string">admin</AttributeValue>
             </Apply>
         </Condition>
     </Rule>
@@ -41,27 +40,31 @@
         <Description>Doctors can not delete</Description>
         <Condition>
             <Apply FunctionId="urn:oasis:names:tc:xacml:1.0:function:string-equal">
+                <Apply FunctionId="urn:oasis:names:tc:xacml:1.0:function:string-one-and-only">
+                    <AttributeDesignator AttributeId="urn:oasis:names:tc:xacml:1.0:subject:subject-id"
+                                         DataType="http://www.w3.org/2001/XMLSchema#string"
+                                         Category="urn:oasis:names:tc:xacml:1.0:subject-category:access-subject"
+                                         MustBePresent="true"/>
+                </Apply>
                 <AttributeValue DataType="http://www.w3.org/2001/XMLSchema#string">doctor</AttributeValue>
-                <AttributeDesignator AttributeId="urn:oasis:names:tc:xacml:1.0:subject:subject-id"
-                                     DataType="http://www.w3.org/2001/XMLSchema#string"
-                                     Category="urn:oasis:names:tc:xacml:1.0:subject-category:access-subject"
-                                     MustBePresent="true"/>
             </Apply>
         </Condition>
     </Rule>
 
     <!-- Rule for nursing staffs-->
-    <Rule RuleId="doctor_access_rule" Effect="Deny">
+    <Rule RuleId="nursing_staffs_access_rule" Effect="Deny">
         <Description>Nursing staffs can not delete</Description>
         <Condition>
             <Apply FunctionId="urn:oasis:names:tc:xacml:1.0:function:string-equal">
+                <Apply FunctionId="urn:oasis:names:tc:xacml:1.0:function:string-one-and-only">
+                    <AttributeDesignator AttributeId="urn:oasis:names:tc:xacml:1.0:subject:subject-id"
+                                         DataType="http://www.w3.org/2001/XMLSchema#string"
+                                         Category="urn:oasis:names:tc:xacml:1.0:subject-category:access-subject"
+                                         MustBePresent="true"/>
+                </Apply>
                 <AttributeValue DataType="http://www.w3.org/2001/XMLSchema#string">nursing_staff</AttributeValue>
-                <AttributeDesignator AttributeId="urn:oasis:names:tc:xacml:1.0:subject:subject-id"
-                                     DataType="http://www.w3.org/2001/XMLSchema#string"
-                                     Category="urn:oasis:names:tc:xacml:1.0:subject-category:access-subject"
-                                     MustBePresent="true"/>
             </Apply>
         </Condition>
     </Rule>
-
+    <Rule Effect="Deny" RuleId="defaultRule" />
 </Policy>
