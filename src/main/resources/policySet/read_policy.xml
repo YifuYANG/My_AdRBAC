@@ -48,6 +48,20 @@
     <!-- Rule for doctors-->
     <Rule RuleId="doctor_access_rule" Effect="Permit">
         <Description>Doctors can read the patient's record between 10 am to 6 pm at their office</Description>
+        <Target>
+            <AnyOf>
+                <AllOf>
+                    <Match MatchId="urn:oasis:names:tc:xacml:1.0:function:string-equal">
+                        <AttributeValue DataType="http://www.w3.org/2001/XMLSchema#string">doctor</AttributeValue>
+                        <AttributeDesignator
+                                AttributeId="urn:oasis:names:tc:xacml:1.0:subject:subject-id"
+                                DataType="http://www.w3.org/2001/XMLSchema#string"
+                                Category="urn:oasis:names:tc:xacml:1.0:subject-category:access-subject"
+                                MustBePresent="true"/>
+                    </Match>
+                </AllOf>
+            </AnyOf>
+        </Target>
         <Condition>
             <Apply FunctionId="urn:oasis:names:tc:xacml:1.0:function:and">
                 <Apply FunctionId="urn:oasis:names:tc:xacml:1.0:function:string-equal">
@@ -68,7 +82,7 @@
                                 AttributeId="urn:oasis:names:tc:xacml:1.0:environment:current-time"/>
                     </Apply>
                     <AttributeValue DataType="http://www.w3.org/2001/XMLSchema#time">10:00:00</AttributeValue>
-                    <AttributeValue DataType="http://www.w3.org/2001/XMLSchema#time">22:00:00</AttributeValue>
+                    <AttributeValue DataType="http://www.w3.org/2001/XMLSchema#time">18:00:00</AttributeValue>
                 </Apply>
                 <Apply FunctionId="urn:oasis:names:tc:xacml:1.0:function:string-equal">
                     <Apply FunctionId="urn:oasis:names:tc:xacml:1.0:function:string-one-and-only">
@@ -85,6 +99,20 @@
     <!-- Rule for nursing staffs-->
     <Rule RuleId="nursing_staffs_access_rule" Effect="Permit">
         <Description>Nursing staffs can read the patient's record between 10 am to 6 pm at the reception</Description>
+        <Target>
+            <AnyOf>
+                <AllOf>
+                    <Match MatchId="urn:oasis:names:tc:xacml:1.0:function:string-equal">
+                        <AttributeValue DataType="http://www.w3.org/2001/XMLSchema#string">nursing_staff</AttributeValue>
+                        <AttributeDesignator
+                                AttributeId="urn:oasis:names:tc:xacml:1.0:subject:subject-id"
+                                DataType="http://www.w3.org/2001/XMLSchema#string"
+                                Category="urn:oasis:names:tc:xacml:1.0:subject-category:access-subject"
+                                MustBePresent="true"/>
+                    </Match>
+                </AllOf>
+            </AnyOf>
+        </Target>
         <Condition>
             <Apply FunctionId="urn:oasis:names:tc:xacml:1.0:function:and">
                 <Apply FunctionId="urn:oasis:names:tc:xacml:1.0:function:string-equal">

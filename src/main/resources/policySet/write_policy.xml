@@ -92,5 +92,5 @@
         </Condition>
     </Rule>
 
-    <Rule Effect="Deny" RuleId="defaultRule" />
+<!--    <Rule Effect="Deny" RuleId="defaultRule" />-->
 </Policy>
