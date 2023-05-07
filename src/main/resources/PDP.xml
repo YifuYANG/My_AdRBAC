@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <pdp xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://authzforce.github.io/core/xmlns/pdp/8" version="7.1">
 <policyProvider id="policyProvider" xsi:type="StaticPolicyProvider">
-<!--    <policyLocation>src/main/resources/policySet/read_policy.xml</policyLocation>-->
-<!--    <policyLocation>src/main/resources/policySet/write_policy.xml</policyLocation>-->
-<!--    <policyLocation>src/main/resources/policySet/delete_policy.xml</policyLocation>-->
+    <policyLocation>src/main/resources/policySet/root-policy.xml</policyLocation>
+    <policyLocation>src/main/resources/policySet/admin-policies.xml</policyLocation>
+    <policyLocation>src/main/resources/policySet/doctor-policies.xml</policyLocation>
     <policyLocation>src/main/resources/policySet/nurse-policies.xml</policyLocation>
 </policyProvider>
-<!--    <rootPolicyRef>medical-record-policy-read</rootPolicyRef>-->
+    <rootPolicyRef>root</rootPolicyRef>
 </pdp>

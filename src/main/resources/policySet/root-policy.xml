@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<PolicySet xmlns="urn:oasis:names:tc:xacml:3.0:core:schema:wd-17" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+           PolicySetId="root"
+           Version="1.0"
+           PolicyCombiningAlgId="urn:oasis:names:tc:xacml:3.0:policy-combining-algorithm:deny-unless-permit">
+    <Description>Root PolicySet</Description>
+    <Target />
+    <PolicySet PolicySetId="RPS:Admin" Version="1.0" PolicyCombiningAlgId="urn:oasis:names:tc:xacml:3.0:policy-combining-algorithm:deny-unless-permit">
+        <Description>
+            Employee Role PolicySet
+        </Description>
+        <Target>
+            <AnyOf>
+                <AllOf>
+                    <Match MatchId="urn:oasis:names:tc:xacml:1.0:function:string-equal">
+                        <AttributeValue DataType="http://www.w3.org/2001/XMLSchema#string">admin</AttributeValue>
+                        <AttributeDesignator Category="urn:oasis:names:tc:xacml:1.0:subject-category:access-subject"
+                                             AttributeId="urn:oasis:names:tc:xacml:1.0:subject:subject-id"
+                                             DataType="http://www.w3.org/2001/XMLSchema#string"
+                                             MustBePresent="true"/>
+                    </Match>
+                </AllOf>
+            </AnyOf>
+        </Target>
+        <PolicySetIdReference>PPS:Admin</PolicySetIdReference>
+    </PolicySet>
+    <PolicySet PolicySetId="RPS:Doctor" Version="1.0"
+               PolicyCombiningAlgId="urn:oasis:names:tc:xacml:3.0:policy-combining-algorithm:deny-unless-permit">
+        <Description>
+            Doctor Role PolicySet
+        </Description>
+        <Target>
+            <AnyOf>
+                <AllOf>
+                    <Match MatchId="urn:oasis:names:tc:xacml:1.0:function:string-equal">
+                        <AttributeValue DataType="http://www.w3.org/2001/XMLSchema#string">doctor</AttributeValue>
+                        <AttributeDesignator Category="urn:oasis:names:tc:xacml:1.0:subject-category:access-subject"
+                                             AttributeId="urn:oasis:names:tc:xacml:1.0:subject:subject-id"
+                                             DataType="http://www.w3.org/2001/XMLSchema#string"
+                                             MustBePresent="true" />
+                    </Match>
+                </AllOf>
+            </AnyOf>
+        </Target>
+        <PolicySetIdReference>PPS:Doctor</PolicySetIdReference>
+    </PolicySet>
+
+    <PolicySet PolicySetId="RPS:Nurse" Version="1.0"
+               PolicyCombiningAlgId="urn:oasis:names:tc:xacml:3.0:policy-combining-algorithm:deny-unless-permit">
+        <Description>
+            Nurse Role PolicySet
+        </Description>
+        <Target>
+            <AnyOf>
+                <AllOf>
+                    <Match MatchId="urn:oasis:names:tc:xacml:1.0:function:string-equal">
+                        <AttributeValue DataType="http://www.w3.org/2001/XMLSchema#string">nursing_staff</AttributeValue>
+                        <AttributeDesignator Category="urn:oasis:names:tc:xacml:1.0:subject-category:access-subject"
+                                             AttributeId="urn:oasis:names:tc:xacml:1.0:subject:subject-id"
+                                             DataType="http://www.w3.org/2001/XMLSchema#string"
+                                             MustBePresent="true" />
+                    </Match>
+                </AllOf>
+            </AnyOf>
+        </Target>
+        <PolicySetIdReference>PPS:Nurse</PolicySetIdReference>
+    </PolicySet>
+</PolicySet>

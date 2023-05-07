@@ -130,7 +130,7 @@
             </AnyOf>
         </Target>
         <Rule RuleId="doctor_read_rule_1" Effect="Permit">
-            <Description>Doctors can read the patient's record between 10 am to 6 pm at their office</Description>
+            <Description>Doctors can read the patient's record between 6 am to 12 pm at their office</Description>
             <Condition>
                 <Apply FunctionId="urn:oasis:names:tc:xacml:1.0:function:and">
                     <Apply FunctionId="urn:oasis:names:tc:xacml:1.0:function:string-equal">
@@ -151,8 +151,8 @@
                                     Category="urn:oasis:names:tc:xacml:3.0:attribute-category:environment"
                                     AttributeId="urn:oasis:names:tc:xacml:1.0:environment:current-time"/>
                         </Apply>
-                        <AttributeValue DataType="http://www.w3.org/2001/XMLSchema#time">10:00:00</AttributeValue>
-                        <AttributeValue DataType="http://www.w3.org/2001/XMLSchema#time">18:00:00</AttributeValue>
+                        <AttributeValue DataType="http://www.w3.org/2001/XMLSchema#time">06:00:00</AttributeValue>
+                        <AttributeValue DataType="http://www.w3.org/2001/XMLSchema#time">23:59:59</AttributeValue>
                     </Apply>
 
                     <Apply FunctionId="urn:oasis:names:tc:xacml:1.0:function:string-equal">
