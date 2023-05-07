@@ -10,7 +10,5 @@ import java.io.IOException;
 public class MyApplication {
     public static void main(String[] args) throws IOException {
         SpringApplication.run(MyApplication.class, args);
-        My_PDP p = new My_PDP();
-        p.hello();
     }
 }
