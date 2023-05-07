@@ -21,7 +21,7 @@ public class User {
     }
 
     public User(long userId, String first_name, String last_name, String password,
-                String email_address, UserLevel userLevel) throws ParseException {
+                String email_address, UserLevel userLevel){
         super();
         this.userId = userId;
         this.first_name = first_name;

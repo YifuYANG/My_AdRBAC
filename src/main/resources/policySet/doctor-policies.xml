@@ -49,6 +49,14 @@
                     <AttributeValue DataType="http://www.w3.org/2001/XMLSchema#string">medical_record</AttributeValue>
                 </Apply>
             </Condition>
+            <ObligationExpressions>
+                <ObligationExpression ObligationId="log-access"
+                                      FulfillOn="Permit">
+                    <AttributeAssignmentExpression AttributeId="log-message">
+                        <AttributeValue DataType="http://www.w3.org/2001/XMLSchema#string">Access denied!+!+!+!</AttributeValue>
+                    </AttributeAssignmentExpression>
+                </ObligationExpression>
+            </ObligationExpressions>
         </Rule>
     </Policy>
 
@@ -130,7 +138,7 @@
             </AnyOf>
         </Target>
         <Rule RuleId="doctor_read_rule_1" Effect="Permit">
-            <Description>Doctors can read the patient's record between 6 am to 12 pm at their office</Description>
+            <Description>Doctors can read the patient's record between 6 am to 12 pm at any location</Description>
             <Condition>
                 <Apply FunctionId="urn:oasis:names:tc:xacml:1.0:function:and">
                     <Apply FunctionId="urn:oasis:names:tc:xacml:1.0:function:string-equal">
@@ -154,18 +162,21 @@
                         <AttributeValue DataType="http://www.w3.org/2001/XMLSchema#time">06:00:00</AttributeValue>
                         <AttributeValue DataType="http://www.w3.org/2001/XMLSchema#time">23:59:59</AttributeValue>
                     </Apply>
-
-                    <Apply FunctionId="urn:oasis:names:tc:xacml:1.0:function:string-equal">
-                        <Apply FunctionId="urn:oasis:names:tc:xacml:1.0:function:string-one-and-only">
-                            <AttributeDesignator AttributeId="urn:oasis:names:tc:xacml:1.0:environment:environment-id"
-                                                 DataType="http://www.w3.org/2001/XMLSchema#string"
-                                                 Category="urn:oasis:names:tc:xacml:3.0:attribute-category:environment"
-                                                 MustBePresent="true"/>
-                        </Apply>
-                        <AttributeValue DataType="http://www.w3.org/2001/XMLSchema#string">office</AttributeValue>
-                    </Apply>
+<!--                    <Apply FunctionId="urn:oasis:names:tc:xacml:1.0:function:string-equal">-->
+<!--                        <Apply FunctionId="urn:oasis:names:tc:xacml:1.0:function:string-one-and-only">-->
+<!--                            <AttributeDesignator AttributeId="urn:oasis:names:tc:xacml:1.0:environment:environment-id"-->
+<!--                                                 DataType="http://www.w3.org/2001/XMLSchema#string"-->
+<!--                                                 Category="urn:oasis:names:tc:xacml:3.0:attribute-category:environment"-->
+<!--                                                 MustBePresent="true"/>-->
+<!--                        </Apply>-->
+<!--                        <AttributeValue DataType="http://www.w3.org/2001/XMLSchema#string">office</AttributeValue>-->
+<!--                    </Apply>-->
                 </Apply>
             </Condition>
         </Rule>
     </Policy>
+    <ObligationExpressions>
+        <!-- Obligation to confirm that this PolicySet was used/evaluated via PolicySetReference in root PolicySet -->
+        <ObligationExpression FulfillOn="Permit" ObligationId="PPS:Employee:obligation" />
+    </ObligationExpressions>
 </PolicySet>
