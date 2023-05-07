@@ -1,13 +1,15 @@
 package app;
 
 import app.xacml.pdp.My_PDP;
+import org.springframework.boot.SpringApplication;
+import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 import java.io.IOException;
 
-//@SpringBootApplication
+@SpringBootApplication
 public class MyApplication {
     public static void main(String[] args) throws IOException {
-        //SpringApplication.run(MyApplication.class, args);
+        SpringApplication.run(MyApplication.class, args);
         My_PDP p = new My_PDP();
         p.hello();
     }

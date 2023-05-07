@@ -9,20 +9,28 @@ import org.ow2.authzforce.core.pdp.api.value.StringValue;
 import org.ow2.authzforce.core.pdp.impl.BasePdpEngine;
 import org.ow2.authzforce.core.pdp.impl.PdpEngineConfiguration;
 import org.ow2.authzforce.xacml.identifiers.XacmlAttributeId;
+import org.springframework.beans.factory.config.ConfigurableBeanFactory;
+import org.springframework.context.annotation.Scope;
+import org.springframework.stereotype.Component;
 
 import java.io.IOException;
 import java.util.Optional;
 
 import static org.ow2.authzforce.xacml.identifiers.XacmlAttributeCategory.*;
 
-public class My_PDP {
-    private final PdpEngineConfiguration pdpEngineConf;
+@Component
+@Scope(ConfigurableBeanFactory.SCOPE_SINGLETON)
+public class My_PDP{
     public My_PDP() throws IOException {
-        pdpEngineConf = PdpEngineConfiguration.getInstance("src/main/resources/PDP.xml");
     }
-    //final PdpEngineConfiguration pdpEngineConf = PdpEngineConfiguration.getInstance("src/main/resources/PDP.xml");
-    public void hello() throws IOException {
-        final BasePdpEngine pdp = new BasePdpEngine(pdpEngineConf);
+    private final PdpEngineConfiguration pdpEngineConf = PdpEngineConfiguration.getInstance("src/main/resources/PDP.xml");;
+    private final BasePdpEngine pdp = new BasePdpEngine(pdpEngineConf);
+    public boolean XACML_response(DecisionRequest request){
+        return pdp.evaluate(request).getDecision() == DecisionType.PERMIT;
+    }
+
+    public void hello() {
+
         final DecisionRequestBuilder<?> requestBuilder = pdp.newRequestBuilder(3, 3);
         //final DecisionRequestBuilder<?> requestBuilder = pdp.newRequestBuilder(-1, -1);
 
@@ -35,7 +43,7 @@ public class My_PDP {
         requestBuilder.putNamedAttributeIfAbsent(environmentIdAttributeId, environmentIdAttributeValues);
 
         final AttributeFqn actionIdAttributeId = AttributeFqns.newInstance(XACML_3_0_ACTION.value(), Optional.empty(), XacmlAttributeId.XACML_1_0_ACTION_ID.value());
-        final AttributeBag<?> actionIdAttributeValues = Bags.singletonAttributeBag(StandardDatatypes.STRING, new StringValue("write"));
+        final AttributeBag<?> actionIdAttributeValues = Bags.singletonAttributeBag(StandardDatatypes.STRING, new StringValue("read"));
         requestBuilder.putNamedAttributeIfAbsent(actionIdAttributeId, actionIdAttributeValues);
 
         final AttributeFqn resourceIdAttributeId = AttributeFqns.newInstance(XACML_3_0_RESOURCE.value(), Optional.empty(), "urn:oasis:names:tc:xacml:1.0:resource:resource-id");
