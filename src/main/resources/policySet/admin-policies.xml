@@ -1,0 +1,124 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<PolicySet xmlns="urn:oasis:names:tc:xacml:3.0:core:schema:wd-17"
+           PolicySetId="PPS:Admin" Version="1.0"
+           PolicyCombiningAlgId="urn:oasis:names:tc:xacml:3.0:policy-combining-algorithm:deny-unless-permit">
+    <Description>Permissions specific to the Admin role</Description>
+    <Target>
+        <AnyOf>
+            <AllOf>
+                <Match MatchId="urn:oasis:names:tc:xacml:1.0:function:string-equal">
+                    <AttributeValue DataType="http://www.w3.org/2001/XMLSchema#string">admin</AttributeValue>
+                    <AttributeDesignator AttributeId="urn:oasis:names:tc:xacml:1.0:subject:subject-id"
+                                         DataType="http://www.w3.org/2001/XMLSchema#string"
+                                         Category="urn:oasis:names:tc:xacml:1.0:subject-category:access-subject"
+                                         MustBePresent="true"/>
+                </Match>
+            </AllOf>
+        </AnyOf>
+    </Target>
+
+    <Policy xmlns="urn:oasis:names:tc:xacml:3.0:core:schema:wd-17"
+            PolicyId="admin-delete"
+            Version="1.0"
+            RuleCombiningAlgId="urn:oasis:names:tc:xacml:3.0:rule-combining-algorithm:deny-overrides">
+
+    <Description>Policy for admin to delete data</Description>
+        <Target>
+            <AnyOf>
+                <AllOf>
+                    <Match MatchId="urn:oasis:names:tc:xacml:1.0:function:string-equal">
+                        <AttributeValue DataType="http://www.w3.org/2001/XMLSchema#string">delete</AttributeValue>
+                        <AttributeDesignator AttributeId="urn:oasis:names:tc:xacml:1.0:action:action-id"
+                                             Category="urn:oasis:names:tc:xacml:3.0:attribute-category:action"
+                                             DataType="http://www.w3.org/2001/XMLSchema#string"
+                                             MustBePresent="true"/>
+                    </Match>
+                </AllOf>
+            </AnyOf>
+        </Target>
+        <Rule RuleId="admin_delete_rule_1" Effect="Permit">
+            <Description>admin can delete the patient's record at anytime and locations</Description>
+            <Condition>
+                <Apply FunctionId="urn:oasis:names:tc:xacml:1.0:function:string-equal">
+                    <Apply FunctionId="urn:oasis:names:tc:xacml:1.0:function:string-one-and-only">
+                        <AttributeDesignator AttributeId="urn:oasis:names:tc:xacml:1.0:resource:resource-id"
+                                             DataType="http://www.w3.org/2001/XMLSchema#string"
+                                             Category="urn:oasis:names:tc:xacml:3.0:attribute-category:resource"
+                                             MustBePresent="true"/>
+                    </Apply>
+                    <AttributeValue DataType="http://www.w3.org/2001/XMLSchema#string">medical_record</AttributeValue>
+                </Apply>
+            </Condition>
+        </Rule>
+    </Policy>
+
+    <Policy xmlns="urn:oasis:names:tc:xacml:3.0:core:schema:wd-17"
+            PolicyId="admin-write"
+            Version="1.0"
+            RuleCombiningAlgId="urn:oasis:names:tc:xacml:3.0:rule-combining-algorithm:deny-overrides">
+
+    <Description>Policy for admin to write data</Description>
+        <Target>
+            <AnyOf>
+                <AllOf>
+                    <Match MatchId="urn:oasis:names:tc:xacml:1.0:function:string-equal">
+                        <AttributeValue DataType="http://www.w3.org/2001/XMLSchema#string">write</AttributeValue>
+                        <AttributeDesignator AttributeId="urn:oasis:names:tc:xacml:1.0:action:action-id"
+                                             Category="urn:oasis:names:tc:xacml:3.0:attribute-category:action"
+                                             DataType="http://www.w3.org/2001/XMLSchema#string"
+                                             MustBePresent="true"/>
+                    </Match>
+                </AllOf>
+            </AnyOf>
+        </Target>
+        <Rule RuleId="admin_write_rule_1" Effect="Permit">
+            <Description>admin can write the patient's record at anytime and locations</Description>
+            <Condition>
+                <Apply FunctionId="urn:oasis:names:tc:xacml:1.0:function:string-equal">
+                    <Apply FunctionId="urn:oasis:names:tc:xacml:1.0:function:string-one-and-only">
+                        <AttributeDesignator AttributeId="urn:oasis:names:tc:xacml:1.0:resource:resource-id"
+                                             DataType="http://www.w3.org/2001/XMLSchema#string"
+                                             Category="urn:oasis:names:tc:xacml:3.0:attribute-category:resource"
+                                             MustBePresent="true"/>
+                    </Apply>
+                    <AttributeValue DataType="http://www.w3.org/2001/XMLSchema#string">medical_record</AttributeValue>
+                </Apply>
+            </Condition>
+        </Rule>
+    </Policy>
+
+    <Policy xmlns="urn:oasis:names:tc:xacml:3.0:core:schema:wd-17"
+            PolicyId="admin-read"
+            Version="1.0"
+            RuleCombiningAlgId="urn:oasis:names:tc:xacml:3.0:rule-combining-algorithm:deny-overrides">
+    <Description>Policy for admin to read data</Description>
+        <Target>
+            <AnyOf>
+                <AllOf>
+                    <Match MatchId="urn:oasis:names:tc:xacml:1.0:function:string-equal">
+                        <AttributeValue DataType="http://www.w3.org/2001/XMLSchema#string">read</AttributeValue>
+                        <AttributeDesignator AttributeId="urn:oasis:names:tc:xacml:1.0:action:action-id"
+                                             Category="urn:oasis:names:tc:xacml:3.0:attribute-category:action"
+                                             DataType="http://www.w3.org/2001/XMLSchema#string"
+                                             MustBePresent="true"/>
+                    </Match>
+                </AllOf>
+            </AnyOf>
+        </Target>
+
+        <Rule RuleId="admin_read_rule_1" Effect="Permit">
+            <Description>admin can read the patient's record at anytime and locations</Description>
+            <Condition>
+                <Apply FunctionId="urn:oasis:names:tc:xacml:1.0:function:string-equal">
+                    <Apply FunctionId="urn:oasis:names:tc:xacml:1.0:function:string-one-and-only">
+                        <AttributeDesignator AttributeId="urn:oasis:names:tc:xacml:1.0:resource:resource-id"
+                                             DataType="http://www.w3.org/2001/XMLSchema#string"
+                                             Category="urn:oasis:names:tc:xacml:3.0:attribute-category:resource"
+                                             MustBePresent="true"/>
+                    </Apply>
+                    <AttributeValue DataType="http://www.w3.org/2001/XMLSchema#string">medical_record</AttributeValue>
+                </Apply>
+            </Condition>
+        </Rule>
+    </Policy>
+</PolicySet>

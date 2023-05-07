@@ -1,0 +1,147 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<PolicySet xmlns="urn:oasis:names:tc:xacml:3.0:core:schema:wd-17"
+           PolicySetId="PPS:Nurse" Version="1.0"
+           PolicyCombiningAlgId="urn:oasis:names:tc:xacml:3.0:policy-combining-algorithm:deny-unless-permit">
+    <Description>Permissions specific to the Nursing Staff</Description>
+    <Target>
+        <AnyOf>
+            <AllOf>
+                <Match MatchId="urn:oasis:names:tc:xacml:1.0:function:string-equal">
+                    <AttributeValue DataType="http://www.w3.org/2001/XMLSchema#string">nursing_staff</AttributeValue>
+                    <AttributeDesignator AttributeId="urn:oasis:names:tc:xacml:1.0:subject:subject-id"
+                                         DataType="http://www.w3.org/2001/XMLSchema#string"
+                                         Category="urn:oasis:names:tc:xacml:1.0:subject-category:access-subject"
+                                         MustBePresent="true"/>
+                </Match>
+            </AllOf>
+        </AnyOf>
+    </Target>
+
+    <Policy xmlns="urn:oasis:names:tc:xacml:3.0:core:schema:wd-17"
+            PolicyId="nurse-delete"
+            Version="1.0"
+            RuleCombiningAlgId="urn:oasis:names:tc:xacml:3.0:rule-combining-algorithm:deny-overrides">
+
+        <Description>Policy for nurse to delete data</Description>
+        <Target>
+            <AnyOf>
+                <AllOf>
+                    <Match MatchId="urn:oasis:names:tc:xacml:1.0:function:string-equal">
+                        <AttributeValue DataType="http://www.w3.org/2001/XMLSchema#string">delete</AttributeValue>
+                        <AttributeDesignator AttributeId="urn:oasis:names:tc:xacml:1.0:action:action-id"
+                                             Category="urn:oasis:names:tc:xacml:3.0:attribute-category:action"
+                                             DataType="http://www.w3.org/2001/XMLSchema#string"
+                                             MustBePresent="true"/>
+                    </Match>
+                </AllOf>
+            </AnyOf>
+        </Target>
+        <Rule RuleId="nurse_delete_rule_1" Effect="Deny">
+            <Description>Nurses can not delete the patient's record</Description>
+            <Condition>
+                <Apply FunctionId="urn:oasis:names:tc:xacml:1.0:function:string-equal">
+                    <Apply FunctionId="urn:oasis:names:tc:xacml:1.0:function:string-one-and-only">
+                        <AttributeDesignator AttributeId="urn:oasis:names:tc:xacml:1.0:resource:resource-id"
+                                             DataType="http://www.w3.org/2001/XMLSchema#string"
+                                             Category="urn:oasis:names:tc:xacml:3.0:attribute-category:resource"
+                                             MustBePresent="true"/>
+                    </Apply>
+                    <AttributeValue DataType="http://www.w3.org/2001/XMLSchema#string">medical_record</AttributeValue>
+                </Apply>
+            </Condition>
+        </Rule>
+    </Policy>
+
+    <Policy xmlns="urn:oasis:names:tc:xacml:3.0:core:schema:wd-17"
+            PolicyId="nurse-write"
+            Version="1.0"
+            RuleCombiningAlgId="urn:oasis:names:tc:xacml:3.0:rule-combining-algorithm:deny-overrides">
+
+        <Description>Policy for nurse to write data</Description>
+        <Target>
+            <AnyOf>
+                <AllOf>
+                    <Match MatchId="urn:oasis:names:tc:xacml:1.0:function:string-equal">
+                        <AttributeValue DataType="http://www.w3.org/2001/XMLSchema#string">write</AttributeValue>
+                        <AttributeDesignator AttributeId="urn:oasis:names:tc:xacml:1.0:action:action-id"
+                                             Category="urn:oasis:names:tc:xacml:3.0:attribute-category:action"
+                                             DataType="http://www.w3.org/2001/XMLSchema#string"
+                                             MustBePresent="true"/>
+                    </Match>
+                </AllOf>
+            </AnyOf>
+        </Target>
+        <Rule RuleId="nurse_write_rule_1" Effect="Deny">
+            <Description>Nurses can not write the patient's record</Description>
+            <Condition>
+                <Apply FunctionId="urn:oasis:names:tc:xacml:1.0:function:string-equal">
+                    <Apply FunctionId="urn:oasis:names:tc:xacml:1.0:function:string-one-and-only">
+                        <AttributeDesignator AttributeId="urn:oasis:names:tc:xacml:1.0:resource:resource-id"
+                                             DataType="http://www.w3.org/2001/XMLSchema#string"
+                                             Category="urn:oasis:names:tc:xacml:3.0:attribute-category:resource"
+                                             MustBePresent="true"/>
+                    </Apply>
+                    <AttributeValue DataType="http://www.w3.org/2001/XMLSchema#string">medical_record</AttributeValue>
+                </Apply>
+            </Condition>
+        </Rule>
+    </Policy>
+
+    <Policy xmlns="urn:oasis:names:tc:xacml:3.0:core:schema:wd-17"
+            PolicyId="nurse-read"
+            Version="1.0"
+            RuleCombiningAlgId="urn:oasis:names:tc:xacml:3.0:rule-combining-algorithm:deny-overrides">
+        <Description>Policy for nurse to read data</Description>
+        <Target>
+            <AnyOf>
+                <AllOf>
+                    <Match MatchId="urn:oasis:names:tc:xacml:1.0:function:string-equal">
+                        <AttributeValue DataType="http://www.w3.org/2001/XMLSchema#string">read</AttributeValue>
+                        <AttributeDesignator AttributeId="urn:oasis:names:tc:xacml:1.0:action:action-id"
+                                             Category="urn:oasis:names:tc:xacml:3.0:attribute-category:action"
+                                             DataType="http://www.w3.org/2001/XMLSchema#string"
+                                             MustBePresent="true"/>
+                    </Match>
+                </AllOf>
+            </AnyOf>
+        </Target>
+        <Rule RuleId="nurse_read_rule_1" Effect="Permit">
+            <Description>Nurses can read the patient's record between 10 am to 6 pm at the reception</Description>
+            <Condition>
+                <Apply FunctionId="urn:oasis:names:tc:xacml:1.0:function:and">
+                    <Apply FunctionId="urn:oasis:names:tc:xacml:1.0:function:string-equal">
+                        <Apply FunctionId="urn:oasis:names:tc:xacml:1.0:function:string-one-and-only">
+                            <AttributeDesignator AttributeId="urn:oasis:names:tc:xacml:1.0:resource:resource-id"
+                                                 DataType="http://www.w3.org/2001/XMLSchema#string"
+                                                 Category="urn:oasis:names:tc:xacml:3.0:attribute-category:resource"
+                                                 MustBePresent="true"/>
+                        </Apply>
+                        <AttributeValue DataType="http://www.w3.org/2001/XMLSchema#string">medical_record</AttributeValue>
+                    </Apply>
+
+                    <Apply FunctionId="urn:oasis:names:tc:xacml:2.0:function:time-in-range">
+                        <Apply FunctionId="urn:oasis:names:tc:xacml:1.0:function:time-one-and-only">
+                            <AttributeDesignator
+                                    DataType="http://www.w3.org/2001/XMLSchema#time"
+                                    MustBePresent="true"
+                                    Category="urn:oasis:names:tc:xacml:3.0:attribute-category:environment"
+                                    AttributeId="urn:oasis:names:tc:xacml:1.0:environment:current-time"/>
+                        </Apply>
+                        <AttributeValue DataType="http://www.w3.org/2001/XMLSchema#time">10:00:00</AttributeValue>
+                        <AttributeValue DataType="http://www.w3.org/2001/XMLSchema#time">18:00:00</AttributeValue>
+                    </Apply>
+
+                    <Apply FunctionId="urn:oasis:names:tc:xacml:1.0:function:string-equal">
+                        <Apply FunctionId="urn:oasis:names:tc:xacml:1.0:function:string-one-and-only">
+                            <AttributeDesignator AttributeId="urn:oasis:names:tc:xacml:1.0:environment:environment-id"
+                                                 DataType="http://www.w3.org/2001/XMLSchema#string"
+                                                 Category="urn:oasis:names:tc:xacml:3.0:attribute-category:environment"
+                                                 MustBePresent="true"/>
+                        </Apply>
+                        <AttributeValue DataType="http://www.w3.org/2001/XMLSchema#string">reception</AttributeValue>
+                    </Apply>
+                </Apply>
+            </Condition>
+        </Rule>
+    </Policy>
+</PolicySet>

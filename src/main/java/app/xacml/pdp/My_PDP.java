@@ -23,20 +23,24 @@ public class My_PDP {
     //final PdpEngineConfiguration pdpEngineConf = PdpEngineConfiguration.getInstance("src/main/resources/PDP.xml");
     public void hello() throws IOException {
         final BasePdpEngine pdp = new BasePdpEngine(pdpEngineConf);
-        final DecisionRequestBuilder<?> requestBuilder = pdp.newRequestBuilder(-1, -1);
-
+        final DecisionRequestBuilder<?> requestBuilder = pdp.newRequestBuilder(3, 3);
+        //final DecisionRequestBuilder<?> requestBuilder = pdp.newRequestBuilder(-1, -1);
 
         final AttributeFqn subjectIdAttributeId = AttributeFqns.newInstance(XACML_1_0_ACCESS_SUBJECT.value(), Optional.empty(), XacmlAttributeId.XACML_1_0_SUBJECT_ID.value());
-        final AttributeBag<?> subjectIdAttributeValues = Bags.singletonAttributeBag(StandardDatatypes.STRING, new StringValue("admin"));
+        final AttributeBag<?> subjectIdAttributeValues = Bags.singletonAttributeBag(StandardDatatypes.STRING, new StringValue("nursing_staff"));
         requestBuilder.putNamedAttributeIfAbsent(subjectIdAttributeId, subjectIdAttributeValues);
 
-        final AttributeFqn resourceIdAttributeId = AttributeFqns.newInstance(XACML_3_0_ENVIRONMENT.value(), Optional.empty(), "urn:oasis:names:tc:xacml:1.0:environment:environment-id");
-        final AttributeBag<?> resourceIdAttributeValues = Bags.singletonAttributeBag(StandardDatatypes.STRING, new StringValue("office"));
-        requestBuilder.putNamedAttributeIfAbsent(resourceIdAttributeId, resourceIdAttributeValues);
+        final AttributeFqn environmentIdAttributeId = AttributeFqns.newInstance(XACML_3_0_ENVIRONMENT.value(), Optional.empty(), "urn:oasis:names:tc:xacml:1.0:environment:environment-id");
+        final AttributeBag<?> environmentIdAttributeValues = Bags.singletonAttributeBag(StandardDatatypes.STRING, new StringValue("reception"));
+        requestBuilder.putNamedAttributeIfAbsent(environmentIdAttributeId, environmentIdAttributeValues);
 
         final AttributeFqn actionIdAttributeId = AttributeFqns.newInstance(XACML_3_0_ACTION.value(), Optional.empty(), XacmlAttributeId.XACML_1_0_ACTION_ID.value());
         final AttributeBag<?> actionIdAttributeValues = Bags.singletonAttributeBag(StandardDatatypes.STRING, new StringValue("read"));
         requestBuilder.putNamedAttributeIfAbsent(actionIdAttributeId, actionIdAttributeValues);
+
+        final AttributeFqn resourceIdAttributeId = AttributeFqns.newInstance(XACML_3_0_RESOURCE.value(), Optional.empty(), "urn:oasis:names:tc:xacml:1.0:resource:resource-id");
+        final AttributeBag<?> resourceIdAttributeValues = Bags.singletonAttributeBag(StandardDatatypes.STRING, new StringValue("medical_record"));
+        requestBuilder.putNamedAttributeIfAbsent(resourceIdAttributeId, resourceIdAttributeValues);
 
         final DecisionRequest request = requestBuilder.build(false);
         // Evaluate the request
