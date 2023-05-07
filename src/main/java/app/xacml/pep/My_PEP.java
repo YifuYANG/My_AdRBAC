@@ -42,7 +42,7 @@ public class My_PEP {
         try {
             String token = (String) joinPoint.getArgs()[0];
             token = token.replaceAll("\"", "");
-            if(token == null || token.length() == 0) {
+            if(token.length() == 0) {
                 log.warn("Absent token detected");
                 throw new CustomErrorException("Access denied, please login first.");
             }
