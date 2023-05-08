@@ -4,6 +4,5 @@ public enum OperationType {
 
     read,
     write,
-    delete,
-    none
+    delete
 }

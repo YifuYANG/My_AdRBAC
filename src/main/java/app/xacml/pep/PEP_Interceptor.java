@@ -15,7 +15,7 @@ public @interface PEP_Interceptor {
 
     UserLevel requiredLevel() default UserLevel.any;
 
-    OperationType operationType() default OperationType.none;
+    OperationType operationType() default OperationType.read;
 
     ResourceType resourceType() default ResourceType.normal_data;
 

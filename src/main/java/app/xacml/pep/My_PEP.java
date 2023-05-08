@@ -43,8 +43,6 @@ public class My_PEP {
         UserLevel requiredLevel = method.getAnnotation(PEP_Interceptor.class).requiredLevel();
         OperationType operationType = method.getAnnotation(PEP_Interceptor.class).operationType();
         ResourceType resourceType = method.getAnnotation(PEP_Interceptor.class).resourceType();
-//        PEP_Interceptor annotation = signature.getMethod().getAnnotation(PEP_Interceptor.class);
-//        OperationType operationType = annotation.operationType();
         try {
             String token = (String) joinPoint.getArgs()[0];
             token = token.replaceAll("\"", "");
@@ -52,28 +50,26 @@ public class My_PEP {
                 log.warn("Absent token detected");
                 throw new CustomErrorException("Access denied, please login first.");
             }
+            // Check if the token exist
             if(!tokenPool.containsToken(token)) {
                 log.warn("Invalid token detected -> " + token);
                 throw new CustomErrorException("Access denied, invalid token >> " + token);
             }
             Long userId = tokenPool.getUserIdByToken(token);
-            //Then check if the token is expired
+            // Check if the token is expired
             if(!tokenPool.validateTokenExpiry(token, LocalDateTime.now())) {
                 log.warn("Expired token detected -> " + token);
                 throw new CustomErrorException("Access denied, your token has been expired, please re-login.");
             }
-            if(requiredLevel == UserLevel.any) {
-                if(pdp.XACML_response(pip.getUserRole(userId).toString(), pip.getLocation(), operationType.toString(), resourceType.toString())){
-                    log.info("Token approved to execute " + method.getName());
-                    return joinPoint.proceed();
-                }
-            } else if(pip.getUserRole(userId) != requiredLevel) {
+            // Check if the user has the required authorization level
+            if (requiredLevel != UserLevel.any && pip.getUserRole(userId) != requiredLevel) {
                 log.warn("Insufficient authorisation detected -> " + token);
                 throw new CustomErrorException("Access denied, you have no privileges to access this content.");
             }
+            // Check if the user is authorized to access the resource for the given conditions
             if(!pdp.XACML_response(pip.getUserRole(userId).toString(), pip.getLocation(), operationType.toString(), resourceType.toString())){
                 log.warn("Insufficient authorisation detected -> " + token);
-                throw new CustomErrorException("Access denied, you can not access this content at this time.");
+                throw new CustomErrorException("Access denied, may try it again later.");
             }
             log.info("Token approved to execute " + method.getName());
             return joinPoint.proceed();
