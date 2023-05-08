@@ -11,7 +11,7 @@ public class CustomErrorExceptionAdvice {
     public ModelAndView exceptionHandler(CustomErrorException e){
         ModelAndView mv = new ModelAndView();
         mv.addObject("msg", e.getMessage());
-        mv.setViewName("error");
+        mv.setViewName("Error");
         return mv;
     }
 

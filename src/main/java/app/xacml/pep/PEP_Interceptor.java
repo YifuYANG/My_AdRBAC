@@ -1,5 +1,7 @@
 package app.xacml.pep;
 
+import app.constant.OperationType;
+import app.constant.ResourceType;
 import app.constant.UserLevel;
 
 import java.lang.annotation.ElementType;
@@ -12,5 +14,9 @@ import java.lang.annotation.Target;
 public @interface PEP_Interceptor {
 
     UserLevel requiredLevel() default UserLevel.any;
+
+    OperationType operationType() default OperationType.none;
+
+    ResourceType resourceType() default ResourceType.normal_data;
 
 }

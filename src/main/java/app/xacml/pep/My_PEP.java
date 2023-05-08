@@ -1,5 +1,7 @@
 package app.xacml.pep;
 
+import app.constant.OperationType;
+import app.constant.ResourceType;
 import app.constant.UserLevel;
 import app.exception.CustomErrorException;
 import app.repository.UserRepository;
@@ -39,6 +41,10 @@ public class My_PEP {
         MethodSignature signature = (MethodSignature) joinPoint.getSignature();
         Method method = signature.getMethod();
         UserLevel requiredLevel = method.getAnnotation(PEP_Interceptor.class).requiredLevel();
+        OperationType operationType = method.getAnnotation(PEP_Interceptor.class).operationType();
+        ResourceType resourceType = method.getAnnotation(PEP_Interceptor.class).resourceType();
+//        PEP_Interceptor annotation = signature.getMethod().getAnnotation(PEP_Interceptor.class);
+//        OperationType operationType = annotation.operationType();
         try {
             String token = (String) joinPoint.getArgs()[0];
             token = token.replaceAll("\"", "");
@@ -57,7 +63,7 @@ public class My_PEP {
                 throw new CustomErrorException("Access denied, your token has been expired, please re-login.");
             }
             if(requiredLevel == UserLevel.any) {
-                if(pdp.XACML_response(pip.getUserRole(userId).toString(), pip.getLocation(), pip.getAction(), pip.getResource())){
+                if(pdp.XACML_response(pip.getUserRole(userId).toString(), pip.getLocation(), operationType.toString(), resourceType.toString())){
                     log.info("Token approved to execute " + method.getName());
                     return joinPoint.proceed();
                 }
@@ -65,7 +71,7 @@ public class My_PEP {
                 log.warn("Insufficient authorisation detected -> " + token);
                 throw new CustomErrorException("Access denied, you have no privileges to access this content.");
             }
-            if(!pdp.XACML_response(pip.getUserRole(userId).toString(), pip.getLocation(), pip.getAction(), pip.getResource())){
+            if(!pdp.XACML_response(pip.getUserRole(userId).toString(), pip.getLocation(), operationType.toString(), resourceType.toString())){
                 log.warn("Insufficient authorisation detected -> " + token);
                 throw new CustomErrorException("Access denied, you can not access this content at this time.");
             }
