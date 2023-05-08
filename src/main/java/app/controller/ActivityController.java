@@ -20,4 +20,16 @@ public class ActivityController {
     public String readMedicalRecord(@RequestHeader("token") String token){
         return "Read success";
     }
+
+    @GetMapping
+    @PEP_Interceptor(requiredLevel = UserLevel.any, operationType = OperationType.write, resourceType = ResourceType.medical_record)
+    public String writeMedicalRecord(@RequestHeader("token") String token){
+        return "Write success";
+    }
+
+    @GetMapping
+    @PEP_Interceptor(requiredLevel = UserLevel.any, operationType = OperationType.delete, resourceType = ResourceType.medical_record)
+    public String deleteMedicalRecord(@RequestHeader("token") String token){
+        return "Delete success";
+    }
 }
