@@ -22,11 +22,4 @@ public class My_PIP {
         return userRepository.findByUserId(userId).getUserLevel();
     }
 
-    public String getAction(){
-        return "read";
-    }
-
-    public String getResource(){
-        return "medical_record";
-    }
 }
