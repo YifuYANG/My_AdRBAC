@@ -11,23 +11,22 @@ import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 @Controller
-@RequestMapping("/activity")
 @Slf4j
 public class ActivityController {
 
-    @GetMapping
+    @GetMapping(value = "/readMedicalRecord")
     @PEP_Interceptor(requiredLevel = UserLevel.any, operationType = OperationType.read, resourceType = ResourceType.medical_record)
     public String readMedicalRecord(@RequestHeader("token") String token){
         return "Read success";
     }
 
-    @GetMapping
+    @GetMapping(value = "/writeMedicalRecord")
     @PEP_Interceptor(requiredLevel = UserLevel.any, operationType = OperationType.write, resourceType = ResourceType.medical_record)
     public String writeMedicalRecord(@RequestHeader("token") String token){
         return "Write success";
     }
 
-    @GetMapping
+    @GetMapping(value = "/deleteMedicalRecord")
     @PEP_Interceptor(requiredLevel = UserLevel.any, operationType = OperationType.delete, resourceType = ResourceType.medical_record)
     public String deleteMedicalRecord(@RequestHeader("token") String token){
         return "Delete success";
