@@ -3,7 +3,6 @@ package app.model;
 import app.constant.UserLevel;
 import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
-import java.text.ParseException;
 
 @Entity
 @Table(name = "users", uniqueConstraints = @UniqueConstraint(columnNames = "email"))
