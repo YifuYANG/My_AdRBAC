@@ -36,9 +36,6 @@ public class TokenPool {
         return -1L;
     }
 
-    public String getTokenByUserId(Long id) {
-        return pool.get(id);
-    }
 
     public void login(Long userId, String token) {
         pool.put(userId, token);
@@ -47,10 +44,6 @@ public class TokenPool {
     public void logout(String token) {
         for (Map.Entry<Long, String> entry : pool.entrySet())
             if (entry.getValue().equals(token)) pool.remove(entry.getKey());
-    }
-
-    public boolean containsUserId(Long userId) {
-        return pool.containsKey(userId);
     }
 
     public boolean containsToken(String token) {

@@ -14,8 +14,8 @@ public class My_PIP {
         this.userRepository = userRepository;
     }
 
-    public String getLocation(){
-        return "office";
+    public String getUserName(long userId){
+        return userRepository.findByUserId(userId).getLast_name()+ " " +userRepository.findByUserId(userId).getFirst_name();
     }
 
     public UserLevel getUserRole(long userId){

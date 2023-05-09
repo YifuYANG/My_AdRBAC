@@ -4,7 +4,6 @@ import app.constant.OperationType;
 import app.constant.ResourceType;
 import app.constant.UserLevel;
 import app.exception.CustomErrorException;
-import app.repository.UserRepository;
 import app.token_pool.TokenPool;
 import app.xacml.pdp.My_PDP;
 import app.xacml.pip.My_PIP;
@@ -46,6 +45,14 @@ public class My_PEP {
         try {
             String token = (String) joinPoint.getArgs()[0];
             token = token.replaceAll("\"", "");
+            String location = "";
+            if(joinPoint.getArgs().length==2){
+                location = (String) joinPoint.getArgs()[1];
+                if(location.equals("")){
+                    log.warn("Absent location detected");
+                    throw new CustomErrorException("Access denied, location unknown");
+                }
+            }
             if(token.length() == 0) {
                 log.warn("Absent token detected");
                 throw new CustomErrorException("Access denied, please login first.");
@@ -67,8 +74,8 @@ public class My_PEP {
                 throw new CustomErrorException("Access denied, you have no privileges to access this content.");
             }
             // Check if the user is authorized to access the resource for the given conditions
-            if(!pdp.XACML_response(pip.getUserRole(userId).toString(), pip.getLocation(), operationType.toString(), resourceType.toString())){
-                log.warn("Insufficient authorisation detected -> " + token);
+            if(!pdp.XACML_response(pip.getUserRole(userId).toString(), location, operationType.toString(), resourceType.toString())){
+                log.warn("Insufficient authorisation detected: User [" + pip.getUserRole(userId)+"] "+pip.getUserName(userId) + " at "+location);
                 throw new CustomErrorException("Access denied, may try it again later.");
             }
             log.info("Token approved to execute " + method.getName());
