@@ -54,7 +54,7 @@ public class LoginController {
                 } else {
                     String token = tokenPool.generateToken();
                     tokenPool.login(user.getUserId(), token);
-                    log.info("Token issued to " + user.getUserId());
+                    log.info("Token issued to " + user.getLast_name()+" "+user.getLast_name());
                     map.put("status", "success");
                     map.put("token", token);
                     map.put("role", getUserRoleByToken(token).name());
