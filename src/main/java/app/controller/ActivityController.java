@@ -38,15 +38,15 @@ public class ActivityController {
     @GetMapping(value = "/readMedicalRecord/{id}")
     @PEP_Interceptor(requiredLevel = UserLevel.any, operationType = OperationType.read, resourceType = ResourceType.medical_record)
     @ResponseBody
-    public ResponseEntity<Map<String,String>> readMedicalRecord(@RequestHeader("token") String token,
+    public ResponseEntity<Map<String,MedicalRecord>> readMedicalRecord(@RequestHeader("token") String token,
                                                                 @RequestHeader("location") String location,
                                                                 @PathVariable("id") Long id) throws CustomErrorException {
         try {
             User user = userRepository.findByUserId(tokenPool.getUserIdByToken(token));
             log.info("User => "+user.getLast_name() +" "+user.getFirst_name() +" [" + user.getUserLevel() +"]"
                     + " Performed Read Operation to [" +medicalRecordRepository.findRecordById(id).getPatient_last_name() +"]'s Medical Record at => ["+location+"].");
-            Map<String,String> map=new HashMap<>();
-            map.put("msg","Read Operation Performed to Medical Record");
+            Map<String,MedicalRecord> map=new HashMap<>();
+            map.put("medical record",medicalRecordRepository.findRecordById(id));
             return new ResponseEntity<>(map,HttpStatus.ACCEPTED);
         } catch (Exception ignored){
             throw new CustomErrorException("something went wrong");
