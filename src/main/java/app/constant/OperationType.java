@@ -2,7 +2,7 @@ package app.constant;
 
 public enum OperationType {
 
-    read,
-    write,
-    delete
+    Read,
+    Write,
+    Delete
 }

@@ -13,10 +13,10 @@ import java.lang.annotation.Target;
 @Target(ElementType.METHOD)
 public @interface PEP_Interceptor {
 
-    UserLevel requiredLevel() default UserLevel.any;
+    UserLevel requiredLevel() default UserLevel.Any;
 
-    OperationType operationType() default OperationType.read;
+    OperationType operationType() default OperationType.Read;
 
-    ResourceType resourceType() default ResourceType.normal_data;
+    ResourceType resourceType() default ResourceType.NormalData;
 
 }

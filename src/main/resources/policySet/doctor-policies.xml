@@ -7,7 +7,7 @@
         <AnyOf>
             <AllOf>
                 <Match MatchId="urn:oasis:names:tc:xacml:1.0:function:string-equal">
-                    <AttributeValue DataType="http://www.w3.org/2001/XMLSchema#string">doctor</AttributeValue>
+                    <AttributeValue DataType="http://www.w3.org/2001/XMLSchema#string">Doctor</AttributeValue>
                     <AttributeDesignator AttributeId="urn:oasis:names:tc:xacml:1.0:subject:subject-id"
                                          DataType="http://www.w3.org/2001/XMLSchema#string"
                                          Category="urn:oasis:names:tc:xacml:1.0:subject-category:access-subject"
@@ -27,7 +27,7 @@
             <AnyOf>
                 <AllOf>
                     <Match MatchId="urn:oasis:names:tc:xacml:1.0:function:string-equal">
-                        <AttributeValue DataType="http://www.w3.org/2001/XMLSchema#string">delete</AttributeValue>
+                        <AttributeValue DataType="http://www.w3.org/2001/XMLSchema#string">Delete</AttributeValue>
                         <AttributeDesignator AttributeId="urn:oasis:names:tc:xacml:1.0:action:action-id"
                                              Category="urn:oasis:names:tc:xacml:3.0:attribute-category:action"
                                              DataType="http://www.w3.org/2001/XMLSchema#string"
@@ -46,7 +46,7 @@
                                              Category="urn:oasis:names:tc:xacml:3.0:attribute-category:resource"
                                              MustBePresent="true"/>
                     </Apply>
-                    <AttributeValue DataType="http://www.w3.org/2001/XMLSchema#string">medical_record</AttributeValue>
+                    <AttributeValue DataType="http://www.w3.org/2001/XMLSchema#string">MedicalRecord</AttributeValue>
                 </Apply>
             </Condition>
             <ObligationExpressions>
@@ -70,7 +70,7 @@
             <AnyOf>
                 <AllOf>
                     <Match MatchId="urn:oasis:names:tc:xacml:1.0:function:string-equal">
-                        <AttributeValue DataType="http://www.w3.org/2001/XMLSchema#string">write</AttributeValue>
+                        <AttributeValue DataType="http://www.w3.org/2001/XMLSchema#string">Write</AttributeValue>
                         <AttributeDesignator AttributeId="urn:oasis:names:tc:xacml:1.0:action:action-id"
                                              Category="urn:oasis:names:tc:xacml:3.0:attribute-category:action"
                                              DataType="http://www.w3.org/2001/XMLSchema#string"
@@ -90,7 +90,7 @@
                                                  Category="urn:oasis:names:tc:xacml:3.0:attribute-category:resource"
                                                  MustBePresent="true"/>
                         </Apply>
-                        <AttributeValue DataType="http://www.w3.org/2001/XMLSchema#string">medical_record</AttributeValue>
+                        <AttributeValue DataType="http://www.w3.org/2001/XMLSchema#string">MedicalRecord</AttributeValue>
                     </Apply>
 
                     <Apply FunctionId="urn:oasis:names:tc:xacml:2.0:function:time-in-range">
@@ -128,7 +128,7 @@
             <AnyOf>
                 <AllOf>
                     <Match MatchId="urn:oasis:names:tc:xacml:1.0:function:string-equal">
-                        <AttributeValue DataType="http://www.w3.org/2001/XMLSchema#string">read</AttributeValue>
+                        <AttributeValue DataType="http://www.w3.org/2001/XMLSchema#string">Read</AttributeValue>
                         <AttributeDesignator AttributeId="urn:oasis:names:tc:xacml:1.0:action:action-id"
                                              Category="urn:oasis:names:tc:xacml:3.0:attribute-category:action"
                                              DataType="http://www.w3.org/2001/XMLSchema#string"
@@ -148,7 +148,7 @@
                                                  Category="urn:oasis:names:tc:xacml:3.0:attribute-category:resource"
                                                  MustBePresent="true"/>
                         </Apply>
-                        <AttributeValue DataType="http://www.w3.org/2001/XMLSchema#string">medical_record</AttributeValue>
+                        <AttributeValue DataType="http://www.w3.org/2001/XMLSchema#string">MedicalRecord</AttributeValue>
                     </Apply>
 
                     <Apply FunctionId="urn:oasis:names:tc:xacml:2.0:function:time-in-range">

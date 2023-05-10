@@ -13,7 +13,7 @@
             <AnyOf>
                 <AllOf>
                     <Match MatchId="urn:oasis:names:tc:xacml:1.0:function:string-equal">
-                        <AttributeValue DataType="http://www.w3.org/2001/XMLSchema#string">admin</AttributeValue>
+                        <AttributeValue DataType="http://www.w3.org/2001/XMLSchema#string">Admin</AttributeValue>
                         <AttributeDesignator Category="urn:oasis:names:tc:xacml:1.0:subject-category:access-subject"
                                              AttributeId="urn:oasis:names:tc:xacml:1.0:subject:subject-id"
                                              DataType="http://www.w3.org/2001/XMLSchema#string"
@@ -34,7 +34,7 @@
             <AnyOf>
                 <AllOf>
                     <Match MatchId="urn:oasis:names:tc:xacml:1.0:function:string-equal">
-                        <AttributeValue DataType="http://www.w3.org/2001/XMLSchema#string">doctor</AttributeValue>
+                        <AttributeValue DataType="http://www.w3.org/2001/XMLSchema#string">Doctor</AttributeValue>
                         <AttributeDesignator Category="urn:oasis:names:tc:xacml:1.0:subject-category:access-subject"
                                              AttributeId="urn:oasis:names:tc:xacml:1.0:subject:subject-id"
                                              DataType="http://www.w3.org/2001/XMLSchema#string"
@@ -55,7 +55,7 @@
             <AnyOf>
                 <AllOf>
                     <Match MatchId="urn:oasis:names:tc:xacml:1.0:function:string-equal">
-                        <AttributeValue DataType="http://www.w3.org/2001/XMLSchema#string">nursing_staff</AttributeValue>
+                        <AttributeValue DataType="http://www.w3.org/2001/XMLSchema#string">Nurse</AttributeValue>
                         <AttributeDesignator Category="urn:oasis:names:tc:xacml:1.0:subject-category:access-subject"
                                              AttributeId="urn:oasis:names:tc:xacml:1.0:subject:subject-id"
                                              DataType="http://www.w3.org/2001/XMLSchema#string"

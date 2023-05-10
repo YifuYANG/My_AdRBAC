@@ -1,5 +1,7 @@
 package app.model;
 
+import app.constant.ResourceSensitivity;
+
 import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
 
@@ -13,16 +15,20 @@ public class MedicalRecord {
     private String patient_first_name, patient_last_name, description;
     private Boolean ispatientincriticalcondition;
 
+    private ResourceSensitivity resourceSensitivity;
+
     public MedicalRecord() {
         super();
     }
 
-    public MedicalRecord(Long recordId, String patient_first_name, String patient_last_name, String description, Boolean ispatientincriticalcondition) {
+    public MedicalRecord(Long recordId, String patient_first_name, String patient_last_name, String description,
+                         Boolean ispatientincriticalcondition, ResourceSensitivity resourceSensitivity) {
         this.recordId = recordId;
         this.patient_first_name = patient_first_name;
         this.patient_last_name = patient_last_name;
         this.description = description;
         this.ispatientincriticalcondition = ispatientincriticalcondition;
+        this.resourceSensitivity = resourceSensitivity;
     }
 
     public Long getRecordId() {
@@ -63,5 +69,13 @@ public class MedicalRecord {
 
     public void setIspatientincriticalcondition(Boolean ispatientincriticalcondition) {
         this.ispatientincriticalcondition = ispatientincriticalcondition;
+    }
+
+    public ResourceSensitivity getResourceSensitivity() {
+        return resourceSensitivity;
+    }
+
+    public void setResourceSensitivity(ResourceSensitivity resourceSensitivity) {
+        this.resourceSensitivity = resourceSensitivity;
     }
 }

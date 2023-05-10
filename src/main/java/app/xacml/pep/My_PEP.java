@@ -67,7 +67,7 @@ public class My_PEP {
                 throw new CustomErrorException("Access denied, your token has been expired, please re-login.");
             }
             // Check if the user has the required authorization level
-            if (requiredLevel != UserLevel.any && pip.getUserRole(userId) != requiredLevel) {
+            if (requiredLevel != UserLevel.Any && pip.getUserRole(userId) != requiredLevel) {
                 log.warn("Insufficient authorisation detected -> " + token);
                 throw new CustomErrorException("Access denied, you have no privileges to access this content.");
             }

@@ -36,7 +36,7 @@ public class ActivityController {
     }
 
     @GetMapping(value = "/readMedicalRecord/{id}")
-    @PEP_Interceptor(requiredLevel = UserLevel.any, operationType = OperationType.read, resourceType = ResourceType.medical_record)
+    @PEP_Interceptor(requiredLevel = UserLevel.Any, operationType = OperationType.Read, resourceType = ResourceType.MedicalRecord)
     @ResponseBody
     public ResponseEntity<Map<String,MedicalRecord>> readMedicalRecord(@RequestHeader("token") String token,
                                                                 @RequestHeader("location") String location,
@@ -54,7 +54,7 @@ public class ActivityController {
     }
 
     @PostMapping(value = "/writeMedicalRecord")
-    @PEP_Interceptor(requiredLevel = UserLevel.any, operationType = OperationType.write, resourceType = ResourceType.medical_record)
+    @PEP_Interceptor(requiredLevel = UserLevel.Any, operationType = OperationType.Write, resourceType = ResourceType.MedicalRecord)
     @ResponseBody
     public ResponseEntity<Map<String,String>> writeMedicalRecord(@RequestHeader("token") String token,
                                                                  @RequestHeader("location") String location,
@@ -73,7 +73,7 @@ public class ActivityController {
     }
 
     @GetMapping(value = "/deleteMedicalRecord/{id}")
-    @PEP_Interceptor(requiredLevel = UserLevel.any, operationType = OperationType.delete, resourceType = ResourceType.medical_record)
+    @PEP_Interceptor(requiredLevel = UserLevel.Any, operationType = OperationType.Delete, resourceType = ResourceType.MedicalRecord)
     @ResponseBody
     public ResponseEntity<Map<String,String>> deleteMedicalRecord(@RequestHeader("token") String token,
                                                                   @RequestHeader("location") String location,
