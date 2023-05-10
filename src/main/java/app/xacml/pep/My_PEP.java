@@ -46,12 +46,10 @@ public class My_PEP {
             String token = (String) joinPoint.getArgs()[0];
             token = token.replaceAll("\"", "");
             String location = "";
-            if(joinPoint.getArgs().length==2){
-                location = (String) joinPoint.getArgs()[1];
-                if(location.equals("")){
-                    log.warn("Absent location detected");
-                    throw new CustomErrorException("Access denied, location unknown");
-                }
+            location = (String) joinPoint.getArgs()[1];
+            if(location.equals("")){
+                log.warn("Absent location detected");
+                throw new CustomErrorException("Access denied, location unknown");
             }
             if(token.length() == 0) {
                 log.warn("Absent token detected");

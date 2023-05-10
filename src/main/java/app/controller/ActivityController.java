@@ -3,6 +3,7 @@ package app.controller;
 import app.constant.OperationType;
 import app.constant.ResourceType;
 import app.constant.UserLevel;
+import app.exception.CustomErrorException;
 import app.model.MedicalRecord;
 import app.model.User;
 import app.repository.MedicalRecordRepository;
@@ -39,13 +40,17 @@ public class ActivityController {
     @ResponseBody
     public ResponseEntity<Map<String,String>> readMedicalRecord(@RequestHeader("token") String token,
                                                                 @RequestHeader("location") String location,
-                                                                @PathVariable("id") Long id){
-        User user = userRepository.findByUserId(tokenPool.getUserIdByToken(token));
-        log.info("User => "+user.getLast_name() +" "+user.getFirst_name() +" [" + user.getUserLevel() +"]"
-                + " Performed Read Operation to [" +medicalRecordRepository.findRecordById(id).getPatient_last_name() +"]'s Medical Record at => ["+location+"].");
-        Map<String,String> map=new HashMap<>();
-        map.put("msg","Read Operation Performed to Medical Record");
-        return new ResponseEntity<>(map,HttpStatus.ACCEPTED);
+                                                                @PathVariable("id") Long id) throws CustomErrorException {
+        try {
+            User user = userRepository.findByUserId(tokenPool.getUserIdByToken(token));
+            log.info("User => "+user.getLast_name() +" "+user.getFirst_name() +" [" + user.getUserLevel() +"]"
+                    + " Performed Read Operation to [" +medicalRecordRepository.findRecordById(id).getPatient_last_name() +"]'s Medical Record at => ["+location+"].");
+            Map<String,String> map=new HashMap<>();
+            map.put("msg","Read Operation Performed to Medical Record");
+            return new ResponseEntity<>(map,HttpStatus.ACCEPTED);
+        } catch (Exception ignored){
+            throw new CustomErrorException("something went wrong");
+        }
     }
 
     @PostMapping(value = "/writeMedicalRecord")
@@ -53,14 +58,18 @@ public class ActivityController {
     @ResponseBody
     public ResponseEntity<Map<String,String>> writeMedicalRecord(@RequestHeader("token") String token,
                                                                  @RequestHeader("location") String location,
-                                                                 @RequestBody MedicalRecordForm medicalRecordForm){
-        updateRecord(medicalRecordForm);
-        User user = userRepository.findByUserId(tokenPool.getUserIdByToken(token));
-        log.info("User => "+user.getLast_name() +" "+user.getFirst_name() +" [" + user.getUserLevel() +"]"
-                + " Performed Write Operation to ["+medicalRecordRepository.findRecordById(medicalRecordForm.getRecordId()).getPatient_last_name() +"]'s Medical Record at => ["+location+"].");
-        Map<String,String> map=new HashMap<>();
-        map.put("msg","Write Operation Performed to Medical Record");
-        return new ResponseEntity<>(map,HttpStatus.ACCEPTED);
+                                                                 @RequestBody MedicalRecordForm medicalRecordForm) throws CustomErrorException {
+        try {
+            updateRecord(medicalRecordForm);
+            User user = userRepository.findByUserId(tokenPool.getUserIdByToken(token));
+            log.info("User => "+user.getLast_name() +" "+user.getFirst_name() +" [" + user.getUserLevel() +"]"
+                    + " Performed Write Operation to ["+medicalRecordRepository.findRecordById(medicalRecordForm.getRecordId()).getPatient_last_name() +"]'s Medical Record at => ["+location+"].");
+            Map<String,String> map=new HashMap<>();
+            map.put("msg","Write Operation Performed to Medical Record");
+            return new ResponseEntity<>(map,HttpStatus.ACCEPTED);
+        } catch (Exception ignored){
+            throw new CustomErrorException("something went wrong");
+        }
     }
 
     @GetMapping(value = "/deleteMedicalRecord/{id}")
@@ -68,14 +77,18 @@ public class ActivityController {
     @ResponseBody
     public ResponseEntity<Map<String,String>> deleteMedicalRecord(@RequestHeader("token") String token,
                                                                   @RequestHeader("location") String location,
-                                                                  @PathVariable("id") Long id){
-        medicalRecordRepository.deleteById(id);
-        User user = userRepository.findByUserId(tokenPool.getUserIdByToken(token));
-        log.info("User => "+user.getLast_name() +" "+user.getFirst_name() +" [" + user.getUserLevel() +"]"
-                + " Performed Delete Operation to Medical Record at => ["+location+"].");
-        Map<String,String> map=new HashMap<>();
-        map.put("msg","Delete Operation Performed to Medical Record");
-        return new ResponseEntity<>(map,HttpStatus.ACCEPTED);
+                                                                  @PathVariable("id") Long id) throws CustomErrorException {
+        try {
+            medicalRecordRepository.deleteById(id);
+            User user = userRepository.findByUserId(tokenPool.getUserIdByToken(token));
+            log.info("User => "+user.getLast_name() +" "+user.getFirst_name() +" [" + user.getUserLevel() +"]"
+                    + " Performed Delete Operation to Medical Record at => ["+location+"].");
+            Map<String,String> map=new HashMap<>();
+            map.put("msg","Delete Operation Performed to Medical Record");
+            return new ResponseEntity<>(map,HttpStatus.ACCEPTED);
+        } catch (Exception ignored){
+            throw new CustomErrorException("something went wrong");
+        }
     }
 
     private void updateRecord(MedicalRecordForm medicalRecordForm){
