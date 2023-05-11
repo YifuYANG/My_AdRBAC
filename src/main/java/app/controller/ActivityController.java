@@ -8,7 +8,7 @@ import app.model.MedicalRecord;
 import app.model.User;
 import app.repository.MedicalRecordRepository;
 import app.repository.UserRepository;
-import app.token_pool.TokenPool;
+import app.bean.TokenPool;
 import app.vo.MedicalRecordForm;
 import app.xacml.pep.PEP_Interceptor;
 import lombok.extern.slf4j.Slf4j;

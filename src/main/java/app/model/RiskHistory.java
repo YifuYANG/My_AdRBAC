@@ -6,7 +6,7 @@ import javax.validation.constraints.NotBlank;
 import java.time.LocalDateTime;
 
 @Entity
-@Table(name = "riskhistory", uniqueConstraints = @UniqueConstraint(columnNames = "userid"))
+@Table(name = "riskhistory", uniqueConstraints = @UniqueConstraint(columnNames = "historyId"))
 public class RiskHistory {
 
     @Id

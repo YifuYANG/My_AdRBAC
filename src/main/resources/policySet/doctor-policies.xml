@@ -112,7 +112,7 @@
                                                  Category="urn:oasis:names:tc:xacml:3.0:attribute-category:environment"
                                                  MustBePresent="true"/>
                         </Apply>
-                        <AttributeValue DataType="http://www.w3.org/2001/XMLSchema#string">office</AttributeValue>
+                        <AttributeValue DataType="http://www.w3.org/2001/XMLSchema#string">Office</AttributeValue>
                     </Apply>
                 </Apply>
             </Condition>

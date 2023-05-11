@@ -104,7 +104,7 @@
                                                  Category="urn:oasis:names:tc:xacml:3.0:attribute-category:environment"
                                                  MustBePresent="true"/>
                         </Apply>
-                        <AttributeValue DataType="http://www.w3.org/2001/XMLSchema#string">reception</AttributeValue>
+                        <AttributeValue DataType="http://www.w3.org/2001/XMLSchema#string">Reception</AttributeValue>
                     </Apply>
                 </Apply>
             </Condition>
@@ -162,7 +162,7 @@
                                                  Category="urn:oasis:names:tc:xacml:3.0:attribute-category:environment"
                                                  MustBePresent="true"/>
                         </Apply>
-                        <AttributeValue DataType="http://www.w3.org/2001/XMLSchema#string">reception</AttributeValue>
+                        <AttributeValue DataType="http://www.w3.org/2001/XMLSchema#string">Reception</AttributeValue>
                     </Apply>
                 </Apply>
             </Condition>

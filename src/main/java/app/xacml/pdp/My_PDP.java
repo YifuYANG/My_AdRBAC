@@ -25,7 +25,7 @@ public class My_PDP{
     }
     private final PdpEngineConfiguration pdpEngineConf = PdpEngineConfiguration.getInstance("src/main/resources/PDP.xml");;
 
-    public boolean XACML_response(String role, String location, String action, String resource) throws IOException {
+    public boolean XACML_response(String role, String officeType, String action, String resource) throws IOException {
         try (BasePdpEngine pdp = new BasePdpEngine(pdpEngineConf)){
             DecisionRequestBuilder<?> requestBuilder = pdp.newRequestBuilder(3, 3);
             AttributeFqn subjectIdAttributeId = AttributeFqns.newInstance(XACML_1_0_ACCESS_SUBJECT.value(), Optional.empty(), XacmlAttributeId.XACML_1_0_SUBJECT_ID.value());
@@ -33,7 +33,7 @@ public class My_PDP{
             requestBuilder.putNamedAttributeIfAbsent(subjectIdAttributeId, subjectIdAttributeValues);
 
             AttributeFqn environmentIdAttributeId = AttributeFqns.newInstance(XACML_3_0_ENVIRONMENT.value(), Optional.empty(), "urn:oasis:names:tc:xacml:1.0:environment:environment-id");
-            AttributeBag<?> environmentIdAttributeValues = Bags.singletonAttributeBag(StandardDatatypes.STRING, new StringValue(location));
+            AttributeBag<?> environmentIdAttributeValues = Bags.singletonAttributeBag(StandardDatatypes.STRING, new StringValue(officeType));
             requestBuilder.putNamedAttributeIfAbsent(environmentIdAttributeId, environmentIdAttributeValues);
 
             AttributeFqn actionIdAttributeId = AttributeFqns.newInstance(XACML_3_0_ACTION.value(), Optional.empty(), XacmlAttributeId.XACML_1_0_ACTION_ID.value());

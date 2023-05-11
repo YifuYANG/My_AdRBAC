@@ -1,5 +1,6 @@
 package app.model;
 
+import app.constant.OfficeLocations;
 import app.constant.UserLevel;
 import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
@@ -12,15 +13,16 @@ public class User {
     private Long userId;
     @NotBlank
     private String first_name, last_name, password, email;
-
     private UserLevel userLevel;
+    private OfficeLocations officeLocations;
 
     public User() {
         super();
     }
 
     public User(long userId, String first_name, String last_name, String password,
-                String email_address, UserLevel userLevel){
+                String email_address, UserLevel userLevel,
+                OfficeLocations officeLocations){
         super();
         this.userId = userId;
         this.first_name = first_name;
@@ -28,6 +30,7 @@ public class User {
         this.password = password;
         this.email = email_address;
         this.userLevel = userLevel;
+        this.officeLocations = officeLocations;
     }
 
     public Long getUserId() {
@@ -76,5 +79,13 @@ public class User {
 
     public void setUserLevel(UserLevel userLevel) {
         this.userLevel = userLevel;
+    }
+
+    public OfficeLocations getOfficeLocations() {
+        return officeLocations;
+    }
+
+    public void setOfficeLocations(OfficeLocations officeLocations) {
+        this.officeLocations = officeLocations;
     }
 }

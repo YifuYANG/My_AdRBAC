@@ -4,7 +4,7 @@ import app.constant.OperationType;
 import app.constant.ResourceType;
 import app.constant.UserLevel;
 import app.exception.CustomErrorException;
-import app.token_pool.TokenPool;
+import app.bean.TokenPool;
 import app.xacml.pdp.My_PDP;
 import app.xacml.pip.My_PIP;
 import lombok.extern.slf4j.Slf4j;
@@ -45,9 +45,9 @@ public class My_PEP {
         try {
             String token = (String) joinPoint.getArgs()[0];
             token = token.replaceAll("\"", "");
-            String location = "";
-            location = (String) joinPoint.getArgs()[1];
-            if(location.equals("")){
+            String officeType = "";
+            officeType = pip.getOfficeType((String) joinPoint.getArgs()[1]).toString();
+            if(officeType.equals("")){
                 log.warn("Absent location detected");
                 throw new CustomErrorException("Access denied, location unknown");
             }
@@ -72,8 +72,8 @@ public class My_PEP {
                 throw new CustomErrorException("Access denied, you have no privileges to access this content.");
             }
             // Check if the user is authorized to access the resource for the given conditions
-            if(!pdp.XACML_response(pip.getUserRole(userId).toString(), location, operationType.toString(), resourceType.toString())){
-                log.warn("Insufficient authorisation detected: User [" + pip.getUserRole(userId)+"] "+pip.getUserName(userId) + " at "+location);
+            if(!pdp.XACML_response(pip.getUserRole(userId).toString(), officeType, operationType.toString(), resourceType.toString())){
+                log.warn("Insufficient authorisation detected: User [" + pip.getUserRole(userId)+"] "+pip.getUserName(userId) + " at "+officeType);
                 throw new CustomErrorException("Access denied, may try it again later.");
             }
             log.info("Token approved to execute " + method.getName());

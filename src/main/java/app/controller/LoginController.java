@@ -5,7 +5,7 @@ import app.constant.UserLevel;
 import app.exception.CustomErrorException;
 import app.model.User;
 import app.repository.UserRepository;
-import app.token_pool.TokenPool;
+import app.bean.TokenPool;
 import app.vo.LoginForm;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
