@@ -5,7 +5,7 @@ import javax.validation.constraints.NotBlank;
 
 @Entity
 @Table(name = "offices", uniqueConstraints = @UniqueConstraint(columnNames = "officeId"))
-public class OfficeLocation {
+public class Office {
     @Id
     @GeneratedValue
     private Long officeId;

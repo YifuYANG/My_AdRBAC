@@ -3,8 +3,10 @@ package app.xacml.pip;
 import app.constant.OfficeType;
 import app.constant.ResourceSensitivity;
 import app.constant.UserLevel;
+import app.model.Office;
 import app.model.RiskHistory;
 import app.repository.MedicalRecordRepository;
+import app.repository.OfficeRepository;
 import app.repository.RiskHistoryRepository;
 import app.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,14 +18,16 @@ import java.util.List;
 public class My_PIP {
     private final UserRepository userRepository;
     private final MedicalRecordRepository medicalRecordRepository;
-
     private final RiskHistoryRepository riskHistoryRepository;
+    private final OfficeRepository officeRepository;
 
     @Autowired
-    public My_PIP(UserRepository userRepository, MedicalRecordRepository medicalRecordRepository,RiskHistoryRepository riskHistoryRepository) {
+    public My_PIP(UserRepository userRepository, MedicalRecordRepository medicalRecordRepository,
+                  RiskHistoryRepository riskHistoryRepository, OfficeRepository officeRepository) {
         this.userRepository = userRepository;
         this.medicalRecordRepository = medicalRecordRepository;
         this.riskHistoryRepository = riskHistoryRepository;
+        this.officeRepository = officeRepository;
     }
 
     public String getUserName(long userId){
@@ -49,5 +53,8 @@ public class My_PIP {
             }
         }
         return null;
+    }
+    public Office getOffice(Long userId){
+        return officeRepository.findByUserId(userId);
     }
 }

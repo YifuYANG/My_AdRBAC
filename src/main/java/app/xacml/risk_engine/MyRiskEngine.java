@@ -3,6 +3,7 @@ package app.xacml.risk_engine;
 import app.constant.OperationType;
 import app.constant.ResourceSensitivity;
 import app.constant.UserLevel;
+import app.model.Office;
 import app.model.RiskHistory;
 import app.xacml.pip.My_PIP;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,9 +21,10 @@ public class MyRiskEngine {
         this.pip = pip;
     }
     private double riskScore = 1.0;
-    public double evaluateRiskReturnRiskScore(UserLevel userLevel, Long userId, Long recordId, OperationType operationType){
+    public double evaluateRiskReturnRiskScore(UserLevel userLevel, Long userId, Long recordId, OperationType operationType,String currentOffice){
         if(userLevel==UserLevel.Admin){
             evaluateRiskBasedOnIfInsideSensitiveTimePeriod();
+            evaluateRiskBasedOnOfficeSite(userId,currentOffice);
             evaluateRiskBasedOnResourceSensitivity(recordId);
             evaluateRiskBasedOnUserHistory(userId);
             evaluateRiskBasedOnOperationType(operationType);
@@ -40,6 +42,13 @@ public class MyRiskEngine {
 
         LocalTime startTime_3 = LocalTime.of(21, 0);
         LocalTime endTime_3 = LocalTime.of(23, 0);
+    }
+
+    private void evaluateRiskBasedOnOfficeSite(Long userId, String currentOffice){
+        Office userOffice = pip.getOffice(userId);
+        if(!userOffice.getOfficeName().equals(currentOffice)){
+
+        }
     }
 
     private void evaluateRiskBasedOnResourceSensitivity(Long recordId){
