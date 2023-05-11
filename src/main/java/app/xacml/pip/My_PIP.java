@@ -46,13 +46,8 @@ public class My_PIP {
         return riskHistoryRepository.findByUserId(userId);
     }
 
-    public OfficeType getOfficeType(String location){
-        for (OfficeType officeType : OfficeType.values()) {
-            if (location.contains(officeType.toString())) {
-                return officeType;
-            }
-        }
-        return null;
+    public OfficeType getOfficeType(Long officeId){
+        return officeRepository.findByOfficeId(officeId).getOfficeType();
     }
     public Office getOffice(Long userId){
         return officeRepository.findByUserId(userId);

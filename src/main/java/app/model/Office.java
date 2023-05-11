@@ -1,5 +1,7 @@
 package app.model;
 
+import app.constant.OfficeType;
+
 import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
 
@@ -12,6 +14,17 @@ public class Office {
     @NotBlank
     private Long userId;
     private String officeName;
+    private OfficeType officeType;
+
+    public Office() {
+        super();
+    }
+    public Office(Long officeId, Long userId, String officeName, OfficeType officeType) {
+        this.officeId = officeId;
+        this.userId = userId;
+        this.officeName = officeName;
+        this.officeType = officeType;
+    }
 
     public Long getOfficeId() {
         return officeId;
@@ -35,5 +48,13 @@ public class Office {
 
     public void setOfficeName(String officeName) {
         this.officeName = officeName;
+    }
+
+    public OfficeType getOfficeType() {
+        return officeType;
+    }
+
+    public void setOfficeType(OfficeType officeType) {
+        this.officeType = officeType;
     }
 }

@@ -7,6 +7,7 @@ import app.exception.CustomErrorException;
 import app.model.MedicalRecord;
 import app.model.User;
 import app.repository.MedicalRecordRepository;
+import app.repository.OfficeRepository;
 import app.repository.UserRepository;
 import app.bean.TokenPool;
 import app.vo.MedicalRecordForm;
@@ -28,23 +29,27 @@ public class ActivityController {
     private final TokenPool tokenPool;
     private final UserRepository userRepository;
     private final MedicalRecordRepository medicalRecordRepository;
+
+    private final OfficeRepository officeRepository;
     @Autowired
-    public ActivityController(TokenPool tokenPool, UserRepository userRepository, MedicalRecordRepository medicalRecordRepository) {
+    public ActivityController(TokenPool tokenPool, UserRepository userRepository, MedicalRecordRepository medicalRecordRepository, OfficeRepository officeRepository) {
         this.tokenPool = tokenPool;
         this.userRepository = userRepository;
         this.medicalRecordRepository = medicalRecordRepository;
+        this.officeRepository = officeRepository;
     }
 
     @GetMapping(value = "/readMedicalRecord/{id}")
     @PEP_Interceptor(requiredLevel = UserLevel.Any, operationType = OperationType.Read, resourceType = ResourceType.MedicalRecord)
     @ResponseBody
     public ResponseEntity<Map<String,MedicalRecord>> readMedicalRecord(@RequestHeader("token") String token,
-                                                                @RequestHeader("location") String location,
+                                                                @RequestHeader("officeId") Long officeId,
                                                                 @PathVariable("id") Long id) throws CustomErrorException {
         try {
             User user = userRepository.findByUserId(tokenPool.getUserIdByToken(token));
             log.info("User => "+user.getLast_name() +" "+user.getFirst_name() +" [" + user.getUserLevel() +"]"
-                    + " Performed Read Operation to [" +medicalRecordRepository.findRecordById(id).getPatient_last_name() +"]'s Medical Record at => ["+location+"].");
+                    + " Performed Read Operation to [" +medicalRecordRepository.findRecordById(id).getPatient_last_name()
+                    +"]'s Medical Record at => ["+officeRepository.findByOfficeId(officeId).getOfficeName()+"].");
             Map<String,MedicalRecord> map=new HashMap<>();
             map.put("medical record",medicalRecordRepository.findRecordById(id));
             return new ResponseEntity<>(map,HttpStatus.ACCEPTED);
@@ -57,13 +62,14 @@ public class ActivityController {
     @PEP_Interceptor(requiredLevel = UserLevel.Any, operationType = OperationType.Write, resourceType = ResourceType.MedicalRecord)
     @ResponseBody
     public ResponseEntity<Map<String,String>> writeMedicalRecord(@RequestHeader("token") String token,
-                                                                 @RequestHeader("location") String location,
+                                                                 @RequestHeader("officeId") Long officeId,
                                                                  @RequestBody MedicalRecordForm medicalRecordForm) throws CustomErrorException {
         try {
             updateRecord(medicalRecordForm);
             User user = userRepository.findByUserId(tokenPool.getUserIdByToken(token));
             log.info("User => "+user.getLast_name() +" "+user.getFirst_name() +" [" + user.getUserLevel() +"]"
-                    + " Performed Write Operation to ["+medicalRecordRepository.findRecordById(medicalRecordForm.getRecordId()).getPatient_last_name() +"]'s Medical Record at => ["+location+"].");
+                    + " Performed Write Operation to ["+medicalRecordRepository.findRecordById(medicalRecordForm.getRecordId()).getPatient_last_name()
+                    +"]'s Medical Record at => ["+officeRepository.findByOfficeId(officeId).getOfficeName()+"].");
             Map<String,String> map=new HashMap<>();
             map.put("msg","Write Operation Performed to Medical Record");
             return new ResponseEntity<>(map,HttpStatus.ACCEPTED);
@@ -76,13 +82,14 @@ public class ActivityController {
     @PEP_Interceptor(requiredLevel = UserLevel.Any, operationType = OperationType.Delete, resourceType = ResourceType.MedicalRecord)
     @ResponseBody
     public ResponseEntity<Map<String,String>> deleteMedicalRecord(@RequestHeader("token") String token,
-                                                                  @RequestHeader("location") String location,
+                                                                  @RequestHeader("officeId") Long officeId,
                                                                   @PathVariable("id") Long id) throws CustomErrorException {
         try {
             medicalRecordRepository.deleteById(id);
             User user = userRepository.findByUserId(tokenPool.getUserIdByToken(token));
             log.info("User => "+user.getLast_name() +" "+user.getFirst_name() +" [" + user.getUserLevel() +"]"
-                    + " Performed Delete Operation to Medical Record at => ["+location+"].");
+                    + " Performed Delete Operation to Medical Record at => ["
+                    +officeRepository.findByOfficeId(officeId).getOfficeName()+"].");
             Map<String,String> map=new HashMap<>();
             map.put("msg","Delete Operation Performed to Medical Record");
             return new ResponseEntity<>(map,HttpStatus.ACCEPTED);
