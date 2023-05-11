@@ -72,7 +72,7 @@
             </AnyOf>
         </Target>
         <Rule RuleId="nurse_write_rule_1" Effect="Permit">
-            <Description>Nurses may write the patient's record at reception between 9 am to 6 pm</Description>
+            <Description>Nurses may write the patient's record at reception between 7 am to 22 pm</Description>
             <Condition>
                 <Apply FunctionId="urn:oasis:names:tc:xacml:1.0:function:and">
                     <Apply FunctionId="urn:oasis:names:tc:xacml:1.0:function:string-equal">
@@ -93,8 +93,8 @@
                                     Category="urn:oasis:names:tc:xacml:3.0:attribute-category:environment"
                                     AttributeId="urn:oasis:names:tc:xacml:1.0:environment:current-time"/>
                         </Apply>
-                        <AttributeValue DataType="http://www.w3.org/2001/XMLSchema#time">09:00:00</AttributeValue>
-                        <AttributeValue DataType="http://www.w3.org/2001/XMLSchema#time">18:00:00</AttributeValue>
+                        <AttributeValue DataType="http://www.w3.org/2001/XMLSchema#time">07:00:00</AttributeValue>
+                        <AttributeValue DataType="http://www.w3.org/2001/XMLSchema#time">22:00:00</AttributeValue>
                     </Apply>
 
                     <Apply FunctionId="urn:oasis:names:tc:xacml:1.0:function:string-equal">
@@ -130,7 +130,7 @@
             </AnyOf>
         </Target>
         <Rule RuleId="nurse_read_rule_1" Effect="Permit">
-            <Description>Nurses can read the patient's record between 9 am to 6 pm at the reception</Description>
+            <Description>Nurses can read the patient's record between 6 am to 11 pm at the reception</Description>
             <Condition>
                 <Apply FunctionId="urn:oasis:names:tc:xacml:1.0:function:and">
                     <Apply FunctionId="urn:oasis:names:tc:xacml:1.0:function:string-equal">
@@ -151,8 +151,8 @@
                                     Category="urn:oasis:names:tc:xacml:3.0:attribute-category:environment"
                                     AttributeId="urn:oasis:names:tc:xacml:1.0:environment:current-time"/>
                         </Apply>
-                        <AttributeValue DataType="http://www.w3.org/2001/XMLSchema#time">09:00:00</AttributeValue>
-                        <AttributeValue DataType="http://www.w3.org/2001/XMLSchema#time">18:00:00</AttributeValue>
+                        <AttributeValue DataType="http://www.w3.org/2001/XMLSchema#time">06:00:00</AttributeValue>
+                        <AttributeValue DataType="http://www.w3.org/2001/XMLSchema#time">23:00:00</AttributeValue>
                     </Apply>
 
                     <Apply FunctionId="urn:oasis:names:tc:xacml:1.0:function:string-equal">

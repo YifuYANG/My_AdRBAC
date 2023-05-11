@@ -3,6 +3,7 @@ package app.xacml.pip;
 import app.constant.OfficeType;
 import app.constant.ResourceSensitivity;
 import app.constant.UserLevel;
+import app.model.MedicalRecord;
 import app.model.Office;
 import app.model.RiskHistory;
 import app.repository.MedicalRecordRepository;
@@ -38,18 +39,18 @@ public class My_PIP {
         return userRepository.findByUserId(userId).getUserLevel();
     }
 
-    public ResourceSensitivity getResourceSensitivity(Long recordID){
-        return medicalRecordRepository.findRecordById(recordID).getResourceSensitivity();
+    public MedicalRecord getResourceByRecordId(Long recordID){
+        return medicalRecordRepository.findRecordById(recordID);
     }
 
-    public List<RiskHistory> getRiskHistory(Long userId){
+    public List<RiskHistory> getRiskHistoryByUserId(Long userId){
         return riskHistoryRepository.findByUserId(userId);
     }
 
-    public OfficeType getOfficeType(Long officeId){
-        return officeRepository.findByOfficeId(officeId).getOfficeType();
-    }
-    public Office getOffice(Long userId){
+    public Office getOfficeByUserId(Long userId){
         return officeRepository.findByUserId(userId);
+    }
+    public Office getOfficeById(Long officeId){
+        return officeRepository.findByOfficeId(officeId);
     }
 }

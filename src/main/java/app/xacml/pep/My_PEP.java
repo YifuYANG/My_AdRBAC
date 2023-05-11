@@ -46,7 +46,7 @@ public class My_PEP {
             String token = (String) joinPoint.getArgs()[0];
             token = token.replaceAll("\"", "");
             String officeType = "";
-            officeType = pip.getOfficeType((Long) joinPoint.getArgs()[1]).toString();
+            officeType = pip.getOfficeById((Long) joinPoint.getArgs()[1]).getOfficeType().toString();
             if(officeType.equals("")){
                 log.warn("Absent location detected");
                 throw new CustomErrorException("Access denied, location unknown");
