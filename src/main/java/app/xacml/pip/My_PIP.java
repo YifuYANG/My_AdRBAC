@@ -6,10 +6,8 @@ import app.constant.UserLevel;
 import app.model.MedicalRecord;
 import app.model.Office;
 import app.model.RiskHistory;
-import app.repository.MedicalRecordRepository;
-import app.repository.OfficeRepository;
-import app.repository.RiskHistoryRepository;
-import app.repository.UserRepository;
+import app.model.TimeTable;
+import app.repository.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -21,14 +19,17 @@ public class My_PIP {
     private final MedicalRecordRepository medicalRecordRepository;
     private final RiskHistoryRepository riskHistoryRepository;
     private final OfficeRepository officeRepository;
+    private final TimeTableRepository timeTableRepository;
 
     @Autowired
     public My_PIP(UserRepository userRepository, MedicalRecordRepository medicalRecordRepository,
-                  RiskHistoryRepository riskHistoryRepository, OfficeRepository officeRepository) {
+                  RiskHistoryRepository riskHistoryRepository, OfficeRepository officeRepository,
+                  TimeTableRepository timeTableRepository) {
         this.userRepository = userRepository;
         this.medicalRecordRepository = medicalRecordRepository;
         this.riskHistoryRepository = riskHistoryRepository;
         this.officeRepository = officeRepository;
+        this.timeTableRepository = timeTableRepository;
     }
 
     public String getUserName(long userId){
@@ -52,5 +53,8 @@ public class My_PIP {
     }
     public Office getOfficeById(Long officeId){
         return officeRepository.findByOfficeId(officeId);
+    }
+    public TimeTable getTimeTableByUserId(Long userId){
+        return timeTableRepository.findByUserId(userId);
     }
 }

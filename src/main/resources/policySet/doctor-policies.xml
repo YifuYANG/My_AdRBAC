@@ -93,17 +93,17 @@
                         <AttributeValue DataType="http://www.w3.org/2001/XMLSchema#string">MedicalRecord</AttributeValue>
                     </Apply>
 
-                    <Apply FunctionId="urn:oasis:names:tc:xacml:2.0:function:time-in-range">
-                        <Apply FunctionId="urn:oasis:names:tc:xacml:1.0:function:time-one-and-only">
-                            <AttributeDesignator
-                                    DataType="http://www.w3.org/2001/XMLSchema#time"
-                                    MustBePresent="true"
-                                    Category="urn:oasis:names:tc:xacml:3.0:attribute-category:environment"
-                                    AttributeId="urn:oasis:names:tc:xacml:1.0:environment:current-time"/>
-                        </Apply>
-                        <AttributeValue DataType="http://www.w3.org/2001/XMLSchema#time">06:00:00</AttributeValue>
-                        <AttributeValue DataType="http://www.w3.org/2001/XMLSchema#time">23:00:00</AttributeValue>
-                    </Apply>
+<!--                    <Apply FunctionId="urn:oasis:names:tc:xacml:2.0:function:time-in-range">-->
+<!--                        <Apply FunctionId="urn:oasis:names:tc:xacml:1.0:function:time-one-and-only">-->
+<!--                            <AttributeDesignator-->
+<!--                                    DataType="http://www.w3.org/2001/XMLSchema#time"-->
+<!--                                    MustBePresent="true"-->
+<!--                                    Category="urn:oasis:names:tc:xacml:3.0:attribute-category:environment"-->
+<!--                                    AttributeId="urn:oasis:names:tc:xacml:1.0:environment:current-time"/>-->
+<!--                        </Apply>-->
+<!--                        <AttributeValue DataType="http://www.w3.org/2001/XMLSchema#time">06:00:00</AttributeValue>-->
+<!--                        <AttributeValue DataType="http://www.w3.org/2001/XMLSchema#time">23:00:00</AttributeValue>-->
+<!--                    </Apply>-->
 
                     <Apply FunctionId="urn:oasis:names:tc:xacml:1.0:function:string-equal">
                         <Apply FunctionId="urn:oasis:names:tc:xacml:1.0:function:string-one-and-only">
@@ -151,17 +151,17 @@
                         <AttributeValue DataType="http://www.w3.org/2001/XMLSchema#string">MedicalRecord</AttributeValue>
                     </Apply>
 
-                    <Apply FunctionId="urn:oasis:names:tc:xacml:2.0:function:time-in-range">
-                        <Apply FunctionId="urn:oasis:names:tc:xacml:1.0:function:time-one-and-only">
-                            <AttributeDesignator
-                                    DataType="http://www.w3.org/2001/XMLSchema#time"
-                                    MustBePresent="true"
-                                    Category="urn:oasis:names:tc:xacml:3.0:attribute-category:environment"
-                                    AttributeId="urn:oasis:names:tc:xacml:1.0:environment:current-time"/>
-                        </Apply>
-                        <AttributeValue DataType="http://www.w3.org/2001/XMLSchema#time">06:00:00</AttributeValue>
-                        <AttributeValue DataType="http://www.w3.org/2001/XMLSchema#time">23:59:59</AttributeValue>
-                    </Apply>
+<!--                    <Apply FunctionId="urn:oasis:names:tc:xacml:2.0:function:time-in-range">-->
+<!--                        <Apply FunctionId="urn:oasis:names:tc:xacml:1.0:function:time-one-and-only">-->
+<!--                            <AttributeDesignator-->
+<!--                                    DataType="http://www.w3.org/2001/XMLSchema#time"-->
+<!--                                    MustBePresent="true"-->
+<!--                                    Category="urn:oasis:names:tc:xacml:3.0:attribute-category:environment"-->
+<!--                                    AttributeId="urn:oasis:names:tc:xacml:1.0:environment:current-time"/>-->
+<!--                        </Apply>-->
+<!--                        <AttributeValue DataType="http://www.w3.org/2001/XMLSchema#time">06:00:00</AttributeValue>-->
+<!--                        <AttributeValue DataType="http://www.w3.org/2001/XMLSchema#time">23:59:59</AttributeValue>-->
+<!--                    </Apply>-->
 <!--                    <Apply FunctionId="urn:oasis:names:tc:xacml:1.0:function:string-equal">-->
 <!--                        <Apply FunctionId="urn:oasis:names:tc:xacml:1.0:function:string-one-and-only">-->
 <!--                            <AttributeDesignator AttributeId="urn:oasis:names:tc:xacml:1.0:environment:environment-id"-->

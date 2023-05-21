@@ -1,7 +1,6 @@
 package app.xacml.risk_engine;
 
 import app.constant.OperationType;
-import app.constant.UserLevel;
 import app.model.MedicalRecord;
 import app.model.Office;
 import app.model.RiskHistory;
@@ -20,24 +19,22 @@ public class MyRiskEngine {
     public MyRiskEngine(My_PIP pip) {
         this.pip = pip;
     }
-    private double riskScore = 1.0;
+    private double riskScore = 0.0;
     public double evaluateRiskReturnRiskScore(Long userId, Long recordId, OperationType operationType,Long currentOfficeId){
-        evaluateRiskBasedOnResourceSensitivity(recordId);
+        riskScore = 10.0;
+        evaluateRiskBasedOnIfInsideSensitiveTimePeriod(operationType,userId);
+        //evaluateRiskBasedOnResourceSensitivity(recordId);
         evaluateRiskBasedOnUserHistory(userId);
-        evaluateRiskBasedOnOperationType(operationType);
         evaluateRiskBasedOnOfficeSite(userId,currentOfficeId);
-        evaluateRiskBasedOnIfInsideSensitiveTimePeriod();
         return riskScore;
     }
 
-    private void evaluateRiskBasedOnIfInsideSensitiveTimePeriod() {
+    private void evaluateRiskBasedOnIfInsideSensitiveTimePeriod(OperationType operationType,Long userId) {
         LocalTime currentTime = LocalTime.now();
-        if (currentTime.isAfter(LocalTime.of(6, 0)) && currentTime.isBefore(LocalTime.of(9, 0))) {
-            riskScore *= 0.9;
-        } else if (currentTime.isAfter(LocalTime.of(18, 0)) && currentTime.isBefore(LocalTime.of(21, 0))) {
-            riskScore *= 0.7;
-        } else if (currentTime.isAfter(LocalTime.of(21, 0)) && currentTime.isBefore(LocalTime.of(23, 59))) {
-            riskScore *= 0.5;
+        if (currentTime.isAfter(pip.getTimeTableByUserId(userId).getStartTime()) && currentTime.isBefore(pip.getTimeTableByUserId(userId).getEndTime())){
+            evaluateRiskBasedOnOperationType(operationType, 1.0,1.0,1.0);
+        } else {
+            evaluateRiskBasedOnOperationType(operationType, 0.8,0.7,0.6);
         }
     }
 
@@ -45,16 +42,16 @@ public class MyRiskEngine {
         Office userOffice = pip.getOfficeByUserId(userId);
         Office currentOffice = pip.getOfficeById(currentOfficeId);
         if(!userOffice.getOfficeName().equals(currentOffice.getOfficeName())){
-            riskScore*=0.7;
+            riskScore*=0.8;
         }
     }
 
     private void evaluateRiskBasedOnResourceSensitivity(Long recordId){
         MedicalRecord resource = pip.getResourceByRecordId(recordId);
         switch (resource.getResourceSensitivity()) {
-            case Internal -> riskScore *= 0.9;
-            case Confidential -> riskScore *= 0.7;
-            case Restricted -> riskScore *= 0.5;
+            case Internal -> riskScore *= 1.0;
+            case Confidential -> riskScore *= 0.8;
+            case Restricted -> riskScore *= 0.6;
             default -> {
             }
         }
@@ -63,19 +60,21 @@ public class MyRiskEngine {
     private void evaluateRiskBasedOnUserHistory(Long userId){
         List<RiskHistory> riskHistoryList = pip.getRiskHistoryByUserId(userId);
         if (riskHistoryList!=null){
-            if(riskHistoryList.size()<=3){
+            if(riskHistoryList.isEmpty()){
+                riskScore*=1.0;
+            } else if(riskHistoryList.size()<=3){
                 riskScore*=0.7;
             } else {
-                riskScore*=0.5;
+                riskScore*=0.0;
             }
         }
     }
 
-    private void evaluateRiskBasedOnOperationType(OperationType operationType){
+    private void evaluateRiskBasedOnOperationType(OperationType operationType, double read_parameter, double write_parameter, double delete_parameter){
         switch (operationType) {
-            case Read -> riskScore *= 0.9;
-            case Write -> riskScore *= 0.7;
-            case Delete -> riskScore *= 0.5;
+            case Read -> riskScore *= read_parameter;
+            case Write -> riskScore *= write_parameter;
+            case Delete -> riskScore *= delete_parameter;
             default -> {
             }
         }

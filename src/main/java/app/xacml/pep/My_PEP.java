@@ -7,6 +7,7 @@ import app.exception.CustomErrorException;
 import app.bean.TokenPool;
 import app.xacml.pdp.My_PDP;
 import app.xacml.pip.My_PIP;
+import app.xacml.risk_engine.MyRiskEngine;
 import lombok.extern.slf4j.Slf4j;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
@@ -26,11 +27,13 @@ public class My_PEP {
     private final My_PIP pip;
     private final My_PDP pdp;
     private final TokenPool tokenPool;
+    private final MyRiskEngine myRiskEngine;
     @Autowired
-    public My_PEP(My_PIP pip, My_PDP pdp, TokenPool tokenPool) {
+    public My_PEP(My_PIP pip, My_PDP pdp, TokenPool tokenPool, MyRiskEngine myRiskEngine) {
         this.pip = pip;
         this.pdp = pdp;
         this.tokenPool = tokenPool;
+        this.myRiskEngine = myRiskEngine;
     }
     @Pointcut("@annotation(app.xacml.pep.PEP_Interceptor)")
     public void pointcut() {
@@ -47,6 +50,7 @@ public class My_PEP {
             token = token.replaceAll("\"", "");
             String officeType = "";
             officeType = pip.getOfficeById((Long) joinPoint.getArgs()[1]).getOfficeType().toString();
+//            Long recordId= (Long) joinPoint.getArgs()[2];
             if(officeType.equals("")){
                 log.warn("Absent location detected");
                 throw new CustomErrorException("Access denied, location unknown");
@@ -76,6 +80,7 @@ public class My_PEP {
                 log.warn("Insufficient authorisation detected: User [" + pip.getUserRole(userId)+"] "+pip.getUserName(userId) + " at "+officeType);
                 throw new CustomErrorException("Access denied, may try it again later.");
             }
+            System.out.println("Score: " + myRiskEngine.evaluateRiskReturnRiskScore(userId,(long)1,operationType,(Long) joinPoint.getArgs()[1]));
             log.info("Token approved to execute " + method.getName());
             return joinPoint.proceed();
         } catch (Exception e){
