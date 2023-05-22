@@ -37,7 +37,6 @@ public class My_PIP {
         return userRepository.findByUserId(userId).getUserLevel();
     }
 
-    //
     public ResourceSensitivity getResourceSensitivityByRecordId(Long recordID){
         return medicalRecordRepository.findRecordById(recordID).getResourceSensitivity();
     }
@@ -53,6 +52,7 @@ public class My_PIP {
     public String getOfficeNameById(Long officeId){
         return officeRepository.findByOfficeId(officeId).getOfficeName();
     }
+
     public LocalTime getStartTimeByUserId(Long userId){
         return timeTableRepository.findByUserId(userId).getStartTime();
     }

@@ -2,8 +2,6 @@ package app.xacml.risk_engine;
 
 import app.constant.OperationType;
 import app.constant.ResourceSensitivity;
-import app.model.MedicalRecord;
-import app.model.Office;
 import app.model.RiskHistory;
 import app.xacml.pip.My_PIP;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,7 +19,9 @@ public class MyRiskEngine {
         this.pip = pip;
     }
     private double riskScore = 0.0;
-    public double evaluateRiskReturnRiskScore(Long userId, Long recordId, OperationType operationType,Long currentOfficeId){
+    public double evaluateRiskReturnRiskScore(Long userId, Long recordId,
+                                              OperationType operationType,
+                                              Long currentOfficeId){
         riskScore = 10.0;
         evaluateRiskBasedOnIfInsideSensitiveTimePeriod(operationType,userId);
         //evaluateRiskBasedOnResourceSensitivity(recordId);
@@ -69,7 +69,8 @@ public class MyRiskEngine {
         }
     }
 
-    private void evaluateRiskBasedOnOperationType(OperationType operationType, double read_parameter, double write_parameter, double delete_parameter){
+    private void evaluateRiskBasedOnOperationType(OperationType operationType, double read_parameter,
+                                                  double write_parameter, double delete_parameter){
         switch (operationType) {
             case Read -> riskScore *= read_parameter;
             case Write -> riskScore *= write_parameter;

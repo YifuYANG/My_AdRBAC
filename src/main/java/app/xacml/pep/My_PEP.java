@@ -7,6 +7,7 @@ import app.exception.CustomErrorException;
 import app.bean.TokenPool;
 import app.repository.OfficeRepository;
 import app.repository.UserRepository;
+import app.vo.MedicalRecordForm;
 import app.xacml.pdp.My_PDP;
 import app.xacml.risk_engine.MyRiskEngine;
 import lombok.extern.slf4j.Slf4j;
@@ -52,7 +53,14 @@ public class My_PEP {
             String token = (String) joinPoint.getArgs()[0];
             token = token.replaceAll("\"", "");
             Long officeId= (Long) joinPoint.getArgs()[1];
-//            Long recordId= (Long) joinPoint.getArgs()[2];
+            Object[] args = joinPoint.getArgs();
+            Long recordId;
+            if(args[2] instanceof Long){
+                recordId= (Long) args[2];
+            } else {
+                MedicalRecordForm medicalRecordForm=(MedicalRecordForm) args[2];
+                recordId = medicalRecordForm.getRecordId();
+            }
             if(officeRepository.findByOfficeId(officeId).getOfficeType().toString().equals("")){
                 log.warn("Absent location detected");
                 throw new CustomErrorException("Access denied, location unknown");
@@ -78,13 +86,13 @@ public class My_PEP {
                 throw new CustomErrorException("Access denied, you have no privileges to access this content.");
             }
             // Check if the user is authorized to access the resource for the given conditions
-            if(!pdp.XACML_response(userId, officeId, operationType.toString(), resourceType.toString())){
+            if(!pdp.XACML_response(userId, officeId, operationType.toString(), resourceType.toString(),recordId)){
                 log.warn("Insufficient authorisation detected: User [" + userRepository.findByUserId(userId).getUserLevel()+"] "+
                         userRepository.findByUserId(userId).getLast_name()+ " " +userRepository.findByUserId(userId).getFirst_name() +
                         " at "+officeRepository.findByOfficeId(officeId).getOfficeName());
                 throw new CustomErrorException("Access denied, may try it again later.");
             }
-            System.out.println("Score: " + myRiskEngine.evaluateRiskReturnRiskScore(userId,(long)1,operationType,(Long) joinPoint.getArgs()[1]));
+            System.out.println("Score: " + myRiskEngine.evaluateRiskReturnRiskScore(userId,recordId,operationType,(Long) joinPoint.getArgs()[1]));
             log.info("Token approved to execute " + method.getName());
             return joinPoint.proceed();
         } catch (Exception e){
