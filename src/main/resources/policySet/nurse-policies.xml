@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <PolicySet xmlns="urn:oasis:names:tc:xacml:3.0:core:schema:wd-17"
            PolicySetId="PPS:Nurse" Version="1.0"
-           PolicyCombiningAlgId="urn:oasis:names:tc:xacml:3.0:policy-combining-algorithm:deny-unless-permit">
+           PolicyCombiningAlgId="urn:oasis:names:tc:xacml:3.0:policy-combining-algorithm:deny-overrides">
     <Description>Permissions specific to the Nursing Staff</Description>
     <Target>
         <AnyOf>
@@ -16,6 +16,42 @@
             </AllOf>
         </AnyOf>
     </Target>
+
+    <Policy xmlns="urn:oasis:names:tc:xacml:3.0:core:schema:wd-17"
+            PolicyId="nurse-access-data"
+            Version="1.0"
+            RuleCombiningAlgId="urn:oasis:names:tc:xacml:3.0:rule-combining-algorithm:deny-overrides">
+        <Description>Policy for nurse to access data</Description>
+        <Target>
+        </Target>
+        <Rule RuleId="nurse_access_data_rule_1" Effect="Deny">
+            <Condition>
+                <Apply FunctionId="urn:oasis:names:tc:xacml:1.0:function:string-equal">
+                    <Apply FunctionId="urn:oasis:names:tc:xacml:1.0:function:string-one-and-only">
+                        <AttributeDesignator AttributeId="resourceSensitivity:resourceSensitivity-id"
+                                             DataType="http://www.w3.org/2001/XMLSchema#string"
+                                             Category="urn:oasis:names:tc:xacml:3.0:attribute-category:resource"
+                                             MustBePresent="true"/>
+                    </Apply>
+                    <AttributeValue DataType="http://www.w3.org/2001/XMLSchema#string">Restricted</AttributeValue>
+                </Apply>
+            </Condition>
+        </Rule>
+
+        <Rule RuleId="nurse_access_data_rule_2" Effect="Deny">
+            <Condition>
+                <Apply FunctionId="urn:oasis:names:tc:xacml:1.0:function:string-equal">
+                    <Apply FunctionId="urn:oasis:names:tc:xacml:1.0:function:string-one-and-only">
+                        <AttributeDesignator AttributeId="resourceSensitivity:resourceSensitivity-id"
+                                             DataType="http://www.w3.org/2001/XMLSchema#string"
+                                             Category="urn:oasis:names:tc:xacml:3.0:attribute-category:resource"
+                                             MustBePresent="true"/>
+                    </Apply>
+                    <AttributeValue DataType="http://www.w3.org/2001/XMLSchema#string">Confidential</AttributeValue>
+                </Apply>
+            </Condition>
+        </Rule>
+    </Policy>
 
     <Policy xmlns="urn:oasis:names:tc:xacml:3.0:core:schema:wd-17"
             PolicyId="nurse-delete"
@@ -72,7 +108,7 @@
             </AnyOf>
         </Target>
         <Rule RuleId="nurse_write_rule_1" Effect="Permit">
-            <Description>Nurses may write the patient's record at reception between 7 am to 22 pm</Description>
+            <Description>Nurses may write the patient's record at reception</Description>
             <Condition>
                 <Apply FunctionId="urn:oasis:names:tc:xacml:1.0:function:and">
                     <Apply FunctionId="urn:oasis:names:tc:xacml:1.0:function:string-equal">
@@ -84,19 +120,6 @@
                         </Apply>
                         <AttributeValue DataType="http://www.w3.org/2001/XMLSchema#string">MedicalRecord</AttributeValue>
                     </Apply>
-
-<!--                    <Apply FunctionId="urn:oasis:names:tc:xacml:2.0:function:time-in-range">-->
-<!--                        <Apply FunctionId="urn:oasis:names:tc:xacml:1.0:function:time-one-and-only">-->
-<!--                            <AttributeDesignator-->
-<!--                                    DataType="http://www.w3.org/2001/XMLSchema#time"-->
-<!--                                    MustBePresent="true"-->
-<!--                                    Category="urn:oasis:names:tc:xacml:3.0:attribute-category:environment"-->
-<!--                                    AttributeId="urn:oasis:names:tc:xacml:1.0:environment:current-time"/>-->
-<!--                        </Apply>-->
-<!--                        <AttributeValue DataType="http://www.w3.org/2001/XMLSchema#time">07:00:00</AttributeValue>-->
-<!--                        <AttributeValue DataType="http://www.w3.org/2001/XMLSchema#time">22:00:00</AttributeValue>-->
-<!--                    </Apply>-->
-
                     <Apply FunctionId="urn:oasis:names:tc:xacml:1.0:function:string-equal">
                         <Apply FunctionId="urn:oasis:names:tc:xacml:1.0:function:string-one-and-only">
                             <AttributeDesignator AttributeId="urn:oasis:names:tc:xacml:1.0:environment:environment-id"
@@ -130,7 +153,7 @@
             </AnyOf>
         </Target>
         <Rule RuleId="nurse_read_rule_1" Effect="Permit">
-            <Description>Nurses can read the patient's record between 6 am to 11 pm at the reception</Description>
+            <Description>Nurses can read the patient's record at the reception</Description>
             <Condition>
                 <Apply FunctionId="urn:oasis:names:tc:xacml:1.0:function:and">
                     <Apply FunctionId="urn:oasis:names:tc:xacml:1.0:function:string-equal">
@@ -142,19 +165,6 @@
                         </Apply>
                         <AttributeValue DataType="http://www.w3.org/2001/XMLSchema#string">MedicalRecord</AttributeValue>
                     </Apply>
-
-<!--                    <Apply FunctionId="urn:oasis:names:tc:xacml:2.0:function:time-in-range">-->
-<!--                        <Apply FunctionId="urn:oasis:names:tc:xacml:1.0:function:time-one-and-only">-->
-<!--                            <AttributeDesignator-->
-<!--                                    DataType="http://www.w3.org/2001/XMLSchema#time"-->
-<!--                                    MustBePresent="true"-->
-<!--                                    Category="urn:oasis:names:tc:xacml:3.0:attribute-category:environment"-->
-<!--                                    AttributeId="urn:oasis:names:tc:xacml:1.0:environment:current-time"/>-->
-<!--                        </Apply>-->
-<!--                        <AttributeValue DataType="http://www.w3.org/2001/XMLSchema#time">06:00:00</AttributeValue>-->
-<!--                        <AttributeValue DataType="http://www.w3.org/2001/XMLSchema#time">23:00:00</AttributeValue>-->
-<!--                    </Apply>-->
-
                     <Apply FunctionId="urn:oasis:names:tc:xacml:1.0:function:string-equal">
                         <Apply FunctionId="urn:oasis:names:tc:xacml:1.0:function:string-one-and-only">
                             <AttributeDesignator AttributeId="urn:oasis:names:tc:xacml:1.0:environment:environment-id"

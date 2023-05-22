@@ -1,6 +1,7 @@
 package app.xacml.risk_engine;
 
 import app.constant.OperationType;
+import app.constant.ResourceSensitivity;
 import app.model.MedicalRecord;
 import app.model.Office;
 import app.model.RiskHistory;
@@ -31,7 +32,7 @@ public class MyRiskEngine {
 
     private void evaluateRiskBasedOnIfInsideSensitiveTimePeriod(OperationType operationType,Long userId) {
         LocalTime currentTime = LocalTime.now();
-        if (currentTime.isAfter(pip.getTimeTableByUserId(userId).getStartTime()) && currentTime.isBefore(pip.getTimeTableByUserId(userId).getEndTime())){
+        if (currentTime.isAfter(pip.getStartTimeByUserId(userId)) && currentTime.isBefore(pip.getEndTimeByUserId(userId))){
             evaluateRiskBasedOnOperationType(operationType, 1.0,1.0,1.0);
         } else {
             evaluateRiskBasedOnOperationType(operationType, 0.8,0.7,0.6);
@@ -39,16 +40,14 @@ public class MyRiskEngine {
     }
 
     private void evaluateRiskBasedOnOfficeSite(Long userId, Long currentOfficeId){
-        Office userOffice = pip.getOfficeByUserId(userId);
-        Office currentOffice = pip.getOfficeById(currentOfficeId);
-        if(!userOffice.getOfficeName().equals(currentOffice.getOfficeName())){
+        if(!pip.getOfficeNameByUserId(userId).equals(pip.getOfficeNameById(currentOfficeId))){
             riskScore*=0.8;
         }
     }
 
     private void evaluateRiskBasedOnResourceSensitivity(Long recordId){
-        MedicalRecord resource = pip.getResourceByRecordId(recordId);
-        switch (resource.getResourceSensitivity()) {
+        ResourceSensitivity resourceSensitivity = pip.getResourceSensitivityByRecordId(recordId);
+        switch (resourceSensitivity) {
             case Internal -> riskScore *= 1.0;
             case Confidential -> riskScore *= 0.8;
             case Restricted -> riskScore *= 0.6;

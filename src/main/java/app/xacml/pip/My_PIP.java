@@ -11,6 +11,7 @@ import app.repository.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import java.time.LocalTime;
 import java.util.List;
 
 @Component
@@ -32,29 +33,35 @@ public class My_PIP {
         this.timeTableRepository = timeTableRepository;
     }
 
-    public String getUserName(long userId){
-        return userRepository.findByUserId(userId).getLast_name()+ " " +userRepository.findByUserId(userId).getFirst_name();
-    }
-
     public UserLevel getUserRole(long userId){
         return userRepository.findByUserId(userId).getUserLevel();
     }
 
-    public MedicalRecord getResourceByRecordId(Long recordID){
-        return medicalRecordRepository.findRecordById(recordID);
+    //
+    public ResourceSensitivity getResourceSensitivityByRecordId(Long recordID){
+        return medicalRecordRepository.findRecordById(recordID).getResourceSensitivity();
     }
 
     public List<RiskHistory> getRiskHistoryByUserId(Long userId){
         return riskHistoryRepository.findByUserId(userId);
     }
 
-    public Office getOfficeByUserId(Long userId){
-        return officeRepository.findByUserId(userId);
+    public String getOfficeNameByUserId(Long userId){
+        return officeRepository.findByUserId(userId).getOfficeName();
     }
-    public Office getOfficeById(Long officeId){
-        return officeRepository.findByOfficeId(officeId);
+
+    public String getOfficeNameById(Long officeId){
+        return officeRepository.findByOfficeId(officeId).getOfficeName();
     }
-    public TimeTable getTimeTableByUserId(Long userId){
-        return timeTableRepository.findByUserId(userId);
+    public LocalTime getStartTimeByUserId(Long userId){
+        return timeTableRepository.findByUserId(userId).getStartTime();
+    }
+
+    public LocalTime getEndTimeByUserId(Long userId){
+        return timeTableRepository.findByUserId(userId).getEndTime();
+    }
+
+    public OfficeType getOfficeTypeById(Long officeId){
+        return officeRepository.findByOfficeId(officeId).getOfficeType();
     }
 }

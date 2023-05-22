@@ -5,8 +5,9 @@ import app.constant.ResourceType;
 import app.constant.UserLevel;
 import app.exception.CustomErrorException;
 import app.bean.TokenPool;
+import app.repository.OfficeRepository;
+import app.repository.UserRepository;
 import app.xacml.pdp.My_PDP;
-import app.xacml.pip.My_PIP;
 import app.xacml.risk_engine.MyRiskEngine;
 import lombok.extern.slf4j.Slf4j;
 import org.aspectj.lang.ProceedingJoinPoint;
@@ -24,13 +25,15 @@ import java.time.LocalDateTime;
 @Aspect
 @Component
 public class My_PEP {
-    private final My_PIP pip;
+    private final UserRepository userRepository;
+    private final OfficeRepository officeRepository;
     private final My_PDP pdp;
     private final TokenPool tokenPool;
     private final MyRiskEngine myRiskEngine;
     @Autowired
-    public My_PEP(My_PIP pip, My_PDP pdp, TokenPool tokenPool, MyRiskEngine myRiskEngine) {
-        this.pip = pip;
+    public My_PEP(UserRepository userRepository, OfficeRepository officeRepository, My_PDP pdp, TokenPool tokenPool, MyRiskEngine myRiskEngine) {
+        this.userRepository = userRepository;
+        this.officeRepository = officeRepository;
         this.pdp = pdp;
         this.tokenPool = tokenPool;
         this.myRiskEngine = myRiskEngine;
@@ -48,10 +51,9 @@ public class My_PEP {
         try {
             String token = (String) joinPoint.getArgs()[0];
             token = token.replaceAll("\"", "");
-            String officeType = "";
-            officeType = pip.getOfficeById((Long) joinPoint.getArgs()[1]).getOfficeType().toString();
+            Long officeId= (Long) joinPoint.getArgs()[1];
 //            Long recordId= (Long) joinPoint.getArgs()[2];
-            if(officeType.equals("")){
+            if(officeRepository.findByOfficeId(officeId).getOfficeType().toString().equals("")){
                 log.warn("Absent location detected");
                 throw new CustomErrorException("Access denied, location unknown");
             }
@@ -71,13 +73,15 @@ public class My_PEP {
                 throw new CustomErrorException("Access denied, your token has been expired, please re-login.");
             }
             // Check if the user has the required authorization level
-            if (requiredLevel != UserLevel.Any && pip.getUserRole(userId) != requiredLevel) {
+            if (requiredLevel != UserLevel.Any && userRepository.findByUserId(userId).getUserLevel() != requiredLevel) {
                 log.warn("Insufficient authorisation detected -> " + token);
                 throw new CustomErrorException("Access denied, you have no privileges to access this content.");
             }
             // Check if the user is authorized to access the resource for the given conditions
-            if(!pdp.XACML_response(pip.getUserRole(userId).toString(), officeType, operationType.toString(), resourceType.toString())){
-                log.warn("Insufficient authorisation detected: User [" + pip.getUserRole(userId)+"] "+pip.getUserName(userId) + " at "+officeType);
+            if(!pdp.XACML_response(userId, officeId, operationType.toString(), resourceType.toString())){
+                log.warn("Insufficient authorisation detected: User [" + userRepository.findByUserId(userId).getUserLevel()+"] "+
+                        userRepository.findByUserId(userId).getLast_name()+ " " +userRepository.findByUserId(userId).getFirst_name() +
+                        " at "+officeRepository.findByOfficeId(officeId).getOfficeName());
                 throw new CustomErrorException("Access denied, may try it again later.");
             }
             System.out.println("Score: " + myRiskEngine.evaluateRiskReturnRiskScore(userId,(long)1,operationType,(Long) joinPoint.getArgs()[1]));
