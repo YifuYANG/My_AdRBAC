@@ -30,13 +30,7 @@
             <artifactId>spring-boot-starter-test</artifactId>
             <scope>test</scope>
         </dependency>
-
-        <dependency>
-            <groupId>org.wso2.balana</groupId>
-            <artifactId>org.wso2.balana</artifactId>
-            <version>1.2.12</version>
-        </dependency>
-
+        
         <dependency>
             <groupId>org.ow2.authzforce</groupId>
             <artifactId>authzforce-ce-core-pdp-engine</artifactId>

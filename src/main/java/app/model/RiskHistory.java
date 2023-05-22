@@ -1,12 +1,19 @@
 package app.model;
 
 
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
 import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
 import java.time.LocalDateTime;
 
+@Data
+@AllArgsConstructor
+@NoArgsConstructor
 @Entity
-@Table(name = "riskhistory", uniqueConstraints = @UniqueConstraint(columnNames = "historyId"))
+@Table(name = "riskHistories")
 public class RiskHistory {
 
     @Id
@@ -16,15 +23,4 @@ public class RiskHistory {
     private Long userId;
     private LocalDateTime timeOfOccurrence;
     private String riskDetail;
-
-    public RiskHistory() {
-        super();
-    }
-
-    public RiskHistory(Long historyId, Long userId, LocalDateTime timeOfOccurrence, String riskDetail) {
-        this.historyId = historyId;
-        this.userId = userId;
-        this.timeOfOccurrence = timeOfOccurrence;
-        this.riskDetail = riskDetail;
-    }
 }

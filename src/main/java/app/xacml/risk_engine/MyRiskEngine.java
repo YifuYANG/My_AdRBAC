@@ -35,7 +35,7 @@ public class MyRiskEngine {
         if (currentTime.isAfter(pip.getStartTimeByUserId(userId)) && currentTime.isBefore(pip.getEndTimeByUserId(userId))){
             evaluateRiskBasedOnOperationType(operationType, 1.0,1.0,1.0);
         } else {
-            evaluateRiskBasedOnOperationType(operationType, 0.8,0.7,0.6);
+            evaluateRiskBasedOnOperationType(operationType, 0.7,0.6,0.5);
         }
     }
 
