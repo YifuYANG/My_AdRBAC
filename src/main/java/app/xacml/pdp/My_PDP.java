@@ -34,6 +34,11 @@ public class My_PDP{
     public boolean XACML_response(Long userId, Long officeId, String action, String resource, Long recordId) throws IOException {
         try (BasePdpEngine pdp = new BasePdpEngine(pdpEngineConf)){
             DecisionRequestBuilder<?> requestBuilder = pdp.newRequestBuilder(-1, -1);
+//            try {
+//
+//            } catch (Exception){
+//
+//            }
             AttributeFqn subjectIdAttributeId = AttributeFqns.newInstance(XACML_1_0_ACCESS_SUBJECT.value(), Optional.empty(), XacmlAttributeId.XACML_1_0_SUBJECT_ID.value());
             AttributeBag<?> subjectIdAttributeValues = Bags.singletonAttributeBag(StandardDatatypes.STRING, new StringValue(pip.getUserRole(userId).toString()));
             requestBuilder.putNamedAttributeIfAbsent(subjectIdAttributeId, subjectIdAttributeValues);

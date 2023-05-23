@@ -2,6 +2,7 @@ package app.controller;
 
 
 import app.constant.UserLevel;
+import app.dao.LoginDao;
 import app.exception.CustomErrorException;
 import app.model.User;
 import app.repository.UserRepository;
@@ -23,13 +24,11 @@ import java.util.regex.Pattern;
 @Slf4j
 public class LoginController {
 
-    private final UserRepository userRepository;
-    private final TokenPool tokenPool;
+    private final LoginDao loginDao;
 
     @Autowired
-    public LoginController(UserRepository userRepository, TokenPool tokenPool) {
-        this.userRepository = userRepository;
-        this.tokenPool = tokenPool;
+    public LoginController(LoginDao loginDao) {
+        this.loginDao = loginDao;
     }
 
     @PostMapping("/login")
@@ -37,7 +36,7 @@ public class LoginController {
     public Map<String, Object> login(@RequestBody LoginForm loginForm) throws CustomErrorException{
         try {
             Map<String, Object> map = new HashMap<>(3);
-            User user = userRepository.findByUserEmail(loginForm.getUserEmail());
+            User user = loginDao.findUserByEmail(loginForm.getUserEmail());
             if(user == null){
                 map.put("status", "fail");
                 map.put("msg", "Account does not exist.");
@@ -52,12 +51,12 @@ public class LoginController {
                     map.put("status", "fail");
                     map.put("msg", "Wrong password.");
                 } else {
-                    String token = tokenPool.generateToken();
-                    tokenPool.login(user.getUserId(), token);
-                    log.info("Token issued to " + user.getLast_name()+" "+user.getLast_name());
+                    String token = loginDao.generateToken();
+                    loginDao.loginUser(user.getUserId(),token);
+                    log.info("Token issued to " + user.getLast_name()+" "+user.getFirst_name());
                     map.put("status", "success");
                     map.put("token", token);
-                    map.put("role", getUserRoleByToken(token).name());
+                    map.put("role", loginDao.getUserRoleByToken(token).name());
                 }
             }
             return map;
@@ -72,10 +71,4 @@ public class LoginController {
         Matcher matcher = pattern.matcher(email);
         return matcher.matches();
     }
-
-    private UserLevel getUserRoleByToken(String token) {
-        Long userId = tokenPool.getUserIdByToken(token);
-        return userRepository.findById(userId).get().getUserLevel();
-    }
-
 }

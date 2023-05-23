@@ -3,13 +3,10 @@ package app.controller;
 import app.constant.OperationType;
 import app.constant.ResourceType;
 import app.constant.UserLevel;
+import app.dao.ActivityDao;
 import app.exception.CustomErrorException;
 import app.model.MedicalRecord;
 import app.model.User;
-import app.repository.MedicalRecordRepository;
-import app.repository.OfficeRepository;
-import app.repository.UserRepository;
-import app.bean.TokenPool;
 import app.vo.MedicalRecordForm;
 import app.xacml.pep.PEP_Interceptor;
 import lombok.extern.slf4j.Slf4j;
@@ -26,17 +23,11 @@ import java.util.Map;
 @Slf4j
 public class ActivityController {
 
-    private final TokenPool tokenPool;
-    private final UserRepository userRepository;
-    private final MedicalRecordRepository medicalRecordRepository;
-
-    private final OfficeRepository officeRepository;
+    private final ActivityDao activityDao;
     @Autowired
-    public ActivityController(TokenPool tokenPool, UserRepository userRepository, MedicalRecordRepository medicalRecordRepository, OfficeRepository officeRepository) {
-        this.tokenPool = tokenPool;
-        this.userRepository = userRepository;
-        this.medicalRecordRepository = medicalRecordRepository;
-        this.officeRepository = officeRepository;
+    public ActivityController(ActivityDao activityDao) {
+
+        this.activityDao = activityDao;
     }
 
     @GetMapping(value = "/readMedicalRecord/{id}")
@@ -46,12 +37,12 @@ public class ActivityController {
                                                                 @RequestHeader("officeId") Long officeId,
                                                                 @PathVariable("id") Long id) throws CustomErrorException {
         try {
-            User user = userRepository.findByUserId(tokenPool.getUserIdByToken(token));
+            User user = activityDao.getUserByUserId(activityDao.getUserIdByToken(token));
             log.info("User => "+user.getLast_name() +" "+user.getFirst_name() +" [" + user.getUserLevel() +"]"
-                    + " Performed Read Operation to [" +medicalRecordRepository.findRecordById(id).getPatient_last_name()
-                    +"]'s Medical Record at => ["+officeRepository.findByOfficeId(officeId).getOfficeName()+"].");
+                    + " Performed Read Operation to [" + activityDao.getMedicalRecordById(id).getPatient_last_name()
+                    +"]'s Medical Record at => ["+ activityDao.getOfficeById(officeId).getOfficeName()+"].");
             Map<String,MedicalRecord> map=new HashMap<>();
-            map.put("medical record",medicalRecordRepository.findRecordById(id));
+            map.put("medical record",activityDao.getMedicalRecordById(id));
             return new ResponseEntity<>(map,HttpStatus.ACCEPTED);
         } catch (Exception ignored){
             throw new CustomErrorException("something went wrong");
@@ -65,11 +56,11 @@ public class ActivityController {
                                                                  @RequestHeader("officeId") Long officeId,
                                                                  @RequestBody MedicalRecordForm medicalRecordForm) throws CustomErrorException {
         try {
-            updateRecord(medicalRecordForm);
-            User user = userRepository.findByUserId(tokenPool.getUserIdByToken(token));
+            activityDao.updateRecord(medicalRecordForm);
+            User user = activityDao.getUserByUserId(activityDao.getUserIdByToken(token));
             log.info("User => "+user.getLast_name() +" "+user.getFirst_name() +" [" + user.getUserLevel() +"]"
-                    + " Performed Write Operation to ["+medicalRecordRepository.findRecordById(medicalRecordForm.getRecordId()).getPatient_last_name()
-                    +"]'s Medical Record at => ["+officeRepository.findByOfficeId(officeId).getOfficeName()+"].");
+                    + " Performed Write Operation to ["+activityDao.getMedicalRecordById(medicalRecordForm.getRecordId()).getPatient_last_name()
+                    +"]'s Medical Record at => ["+ activityDao.getOfficeById(officeId).getOfficeName()+"].");
             Map<String,String> map=new HashMap<>();
             map.put("msg","Write Operation Performed to Medical Record");
             return new ResponseEntity<>(map,HttpStatus.ACCEPTED);
@@ -85,22 +76,16 @@ public class ActivityController {
                                                                   @RequestHeader("officeId") Long officeId,
                                                                   @PathVariable("id") Long id) throws CustomErrorException {
         try {
-            medicalRecordRepository.deleteById(id);
-            User user = userRepository.findByUserId(tokenPool.getUserIdByToken(token));
+            activityDao.deleteByRecordId(id);
+            User user = activityDao.getUserByUserId(activityDao.getUserIdByToken(token));
             log.info("User => "+user.getLast_name() +" "+user.getFirst_name() +" [" + user.getUserLevel() +"]"
                     + " Performed Delete Operation to Medical Record at => ["
-                    +officeRepository.findByOfficeId(officeId).getOfficeName()+"].");
+                    + activityDao.getOfficeById(officeId).getOfficeName()+"].");
             Map<String,String> map=new HashMap<>();
             map.put("msg","Delete Operation Performed to Medical Record");
             return new ResponseEntity<>(map,HttpStatus.ACCEPTED);
         } catch (Exception ignored){
             throw new CustomErrorException("something went wrong");
         }
-    }
-
-    private void updateRecord(MedicalRecordForm medicalRecordForm){
-        MedicalRecord updateRecord=medicalRecordRepository.findRecordById(medicalRecordForm.getRecordId());
-        updateRecord.setDescription(medicalRecordForm.getDescription());
-        medicalRecordRepository.save(updateRecord);
     }
 }

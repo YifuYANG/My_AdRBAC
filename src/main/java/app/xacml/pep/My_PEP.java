@@ -3,6 +3,7 @@ package app.xacml.pep;
 import app.constant.OperationType;
 import app.constant.ResourceType;
 import app.constant.UserLevel;
+import app.dao.PEPDao;
 import app.exception.CustomErrorException;
 import app.bean.TokenPool;
 import app.repository.OfficeRepository;
@@ -26,17 +27,14 @@ import java.time.LocalDateTime;
 @Aspect
 @Component
 public class My_PEP {
-    private final UserRepository userRepository;
-    private final OfficeRepository officeRepository;
+
+    private final PEPDao pepDao;
     private final My_PDP pdp;
-    private final TokenPool tokenPool;
     private final MyRiskEngine myRiskEngine;
     @Autowired
-    public My_PEP(UserRepository userRepository, OfficeRepository officeRepository, My_PDP pdp, TokenPool tokenPool, MyRiskEngine myRiskEngine) {
-        this.userRepository = userRepository;
-        this.officeRepository = officeRepository;
+    public My_PEP(PEPDao pepDao, My_PDP pdp, MyRiskEngine myRiskEngine) {
+        this.pepDao = pepDao;
         this.pdp = pdp;
-        this.tokenPool = tokenPool;
         this.myRiskEngine = myRiskEngine;
     }
     @Pointcut("@annotation(app.xacml.pep.PEP_Interceptor)")
@@ -61,7 +59,7 @@ public class My_PEP {
                 MedicalRecordForm medicalRecordForm=(MedicalRecordForm) args[2];
                 recordId = medicalRecordForm.getRecordId();
             }
-            if(officeRepository.findByOfficeId(officeId).getOfficeType().toString().equals("")){
+            if(pepDao.findOfficeByOfficeId(officeId).getOfficeType().toString().equals("")){
                 log.warn("Absent location detected");
                 throw new CustomErrorException("Access denied, location unknown");
             }
@@ -70,29 +68,29 @@ public class My_PEP {
                 throw new CustomErrorException("Access denied, please login first.");
             }
             // Check if the token exist
-            if(!tokenPool.containsToken(token)) {
+            if(!pepDao.containsToken(token)) {
                 log.warn("Invalid token detected -> " + token);
                 throw new CustomErrorException("Access denied, invalid token >> " + token);
             }
-            Long userId = tokenPool.getUserIdByToken(token);
+            Long userId = pepDao.getUserIdByToken(token);
             // Check if the token is expired
-            if(!tokenPool.validateTokenExpiry(token, LocalDateTime.now())) {
+            if(!pepDao.validateTokenExpiry(token)) {
                 log.warn("Expired token detected -> " + token);
                 throw new CustomErrorException("Access denied, your token has been expired, please re-login.");
             }
             // Check if the user has the required authorization level
-            if (requiredLevel != UserLevel.Any && userRepository.findByUserId(userId).getUserLevel() != requiredLevel) {
+            if (requiredLevel != UserLevel.Any && pepDao.findUserByUserId(userId).getUserLevel() != requiredLevel) {
                 log.warn("Insufficient authorisation detected -> " + token);
                 throw new CustomErrorException("Access denied, you have no privileges to access this content.");
             }
             // Check if the user is authorized to access the resource for the given conditions
             if(!pdp.XACML_response(userId, officeId, operationType.toString(), resourceType.toString(),recordId)){
-                log.warn("Insufficient authorisation detected: User [" + userRepository.findByUserId(userId).getUserLevel()+"] "+
-                        userRepository.findByUserId(userId).getLast_name()+ " " +userRepository.findByUserId(userId).getFirst_name() +
-                        " at "+officeRepository.findByOfficeId(officeId).getOfficeName());
+                log.warn("Insufficient authorisation detected: User [" + pepDao.findUserByUserId(userId).getUserLevel()+"] "+
+                        pepDao.findUserByUserId(userId).getLast_name()+ " " +pepDao.findUserByUserId(userId).getFirst_name() +
+                        " at "+pepDao.findOfficeByOfficeId(officeId).getOfficeName());
                 throw new CustomErrorException("Access denied, may try it again later.");
             }
-            System.out.println("Score: " + myRiskEngine.evaluateRiskReturnRiskScore(userId,recordId,operationType,(Long) joinPoint.getArgs()[1]));
+            //System.out.println("Score: " + myRiskEngine.evaluateRiskReturnRiskScore(userId,recordId,operationType,officeId));
             log.info("Token approved to execute " + method.getName());
             return joinPoint.proceed();
         } catch (Exception e){
