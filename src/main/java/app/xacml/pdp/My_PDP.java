@@ -1,5 +1,6 @@
 package app.xacml.pdp;
 
+import app.exception.CustomErrorException;
 import app.xacml.pip.My_PIP;
 import oasis.names.tc.xacml._3_0.core.schema.wd_17.DecisionType;
 import org.ow2.authzforce.core.pdp.api.*;
@@ -31,14 +32,10 @@ public class My_PDP{
     }
     private final PdpEngineConfiguration pdpEngineConf = PdpEngineConfiguration.getInstance("src/main/resources/PDP.xml");;
 
-    public boolean XACML_response(Long userId, Long officeId, String action, String resource, Long recordId) throws IOException {
+    public boolean XACML_response(Long userId, Long officeId, String action, String resource, Long recordId) throws CustomErrorException {
         try (BasePdpEngine pdp = new BasePdpEngine(pdpEngineConf)){
+
             DecisionRequestBuilder<?> requestBuilder = pdp.newRequestBuilder(-1, -1);
-//            try {
-//
-//            } catch (Exception){
-//
-//            }
             AttributeFqn subjectIdAttributeId = AttributeFqns.newInstance(XACML_1_0_ACCESS_SUBJECT.value(), Optional.empty(), XacmlAttributeId.XACML_1_0_SUBJECT_ID.value());
             AttributeBag<?> subjectIdAttributeValues = Bags.singletonAttributeBag(StandardDatatypes.STRING, new StringValue(pip.getUserRole(userId).toString()));
             requestBuilder.putNamedAttributeIfAbsent(subjectIdAttributeId, subjectIdAttributeValues);
@@ -61,6 +58,8 @@ public class My_PDP{
 
             DecisionRequest request = requestBuilder.build(false);
             return pdp.evaluate(request).getDecision() == DecisionType.PERMIT;
+        } catch (Exception ignore){
+            throw new CustomErrorException("Bad Request");
         }
     }
 }

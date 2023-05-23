@@ -5,9 +5,6 @@ import app.constant.ResourceType;
 import app.constant.UserLevel;
 import app.dao.PEPDao;
 import app.exception.CustomErrorException;
-import app.bean.TokenPool;
-import app.repository.OfficeRepository;
-import app.repository.UserRepository;
 import app.vo.MedicalRecordForm;
 import app.xacml.pdp.My_PDP;
 import app.xacml.risk_engine.MyRiskEngine;
@@ -21,7 +18,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.lang.reflect.Method;
-import java.time.LocalDateTime;
 
 @Slf4j
 @Aspect
@@ -59,13 +55,13 @@ public class My_PEP {
                 MedicalRecordForm medicalRecordForm=(MedicalRecordForm) args[2];
                 recordId = medicalRecordForm.getRecordId();
             }
-            if(pepDao.findOfficeByOfficeId(officeId).getOfficeType().toString().equals("")){
-                log.warn("Absent location detected");
-                throw new CustomErrorException("Access denied, location unknown");
-            }
             if(token.length() == 0) {
                 log.warn("Absent token detected");
                 throw new CustomErrorException("Access denied, please login first.");
+            }
+            if(officeId==null){
+                log.warn("Absent location detected");
+                throw new CustomErrorException("Access denied, location unknown");
             }
             // Check if the token exist
             if(!pepDao.containsToken(token)) {
