@@ -1,7 +1,9 @@
 package app.xacml.pdp;
 
+import app.constant.RiskLevel;
 import app.exception.CustomErrorException;
 import app.xacml.pip.My_PIP;
+import app.xacml.risk_engine.MyRiskEngine;
 import oasis.names.tc.xacml._3_0.core.schema.wd_17.DecisionType;
 import org.ow2.authzforce.core.pdp.api.*;
 import org.ow2.authzforce.core.pdp.api.value.AttributeBag;
@@ -26,9 +28,11 @@ import static org.ow2.authzforce.xacml.identifiers.XacmlAttributeCategory.*;
 public class My_PDP{
 
     private final My_PIP pip;
+    private final MyRiskEngine myRiskEngine;
     @Autowired
-    public My_PDP(My_PIP pip) throws IOException {
+    public My_PDP(My_PIP pip, MyRiskEngine myRiskEngine) throws IOException {
         this.pip = pip;
+        this.myRiskEngine = myRiskEngine;
     }
     private final PdpEngineConfiguration pdpEngineConf = PdpEngineConfiguration.getInstance("src/main/resources/PDP.xml");;
 
@@ -61,5 +65,20 @@ public class My_PDP{
         } catch (Exception ignore){
             throw new CustomErrorException("Bad Request");
         }
+    }
+
+    public RiskLevel decisionMakingEngine(Long userId, Long recordId,
+                                          String action, String resource,
+                                          Long currentOfficeId) throws CustomErrorException {
+        if (!XACML_response(userId, currentOfficeId, action, resource, recordId)) {
+            return RiskLevel.Extreme;
+        }
+
+        double riskScore = myRiskEngine.evaluateRiskReturnRiskScore(userId, recordId, currentOfficeId);
+
+        return (riskScore >= 9.0) ? RiskLevel.Low :
+               (riskScore >= 7.0) ? RiskLevel.Medium :
+               (riskScore >= 5.0) ? RiskLevel.High :
+               RiskLevel.Extreme;
     }
 }

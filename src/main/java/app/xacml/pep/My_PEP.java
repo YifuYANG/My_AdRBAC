@@ -26,12 +26,10 @@ public class My_PEP {
 
     private final PEPDao pepDao;
     private final My_PDP pdp;
-    private final MyRiskEngine myRiskEngine;
     @Autowired
-    public My_PEP(PEPDao pepDao, My_PDP pdp, MyRiskEngine myRiskEngine) {
+    public My_PEP(PEPDao pepDao, My_PDP pdp) {
         this.pepDao = pepDao;
         this.pdp = pdp;
-        this.myRiskEngine = myRiskEngine;
     }
     @Pointcut("@annotation(app.xacml.pep.PEP_Interceptor)")
     public void pointcut() {
@@ -86,7 +84,7 @@ public class My_PEP {
                         " at "+pepDao.findOfficeByOfficeId(officeId).getOfficeName());
                 throw new CustomErrorException("Access denied, may try it again later.");
             }
-            //System.out.println("Score: " + myRiskEngine.evaluateRiskReturnRiskScore(userId,recordId,operationType,officeId));
+            System.out.println("Risk level: " + pdp.decisionMakingEngine(userId,recordId,operationType.toString(),resourceType.toString(),officeId).toString());
             log.info("Token approved to execute " + method.getName());
             return joinPoint.proceed();
         } catch (Exception e){
