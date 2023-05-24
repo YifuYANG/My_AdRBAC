@@ -1,6 +1,7 @@
 package app.xacml.pdp;
 
 import app.constant.RiskLevel;
+import app.constant.UserLevel;
 import app.exception.CustomErrorException;
 import app.xacml.pip.My_PIP;
 import app.xacml.risk_engine.MyRiskEngine;
@@ -36,7 +37,27 @@ public class My_PDP{
     }
     private final PdpEngineConfiguration pdpEngineConf = PdpEngineConfiguration.getInstance("src/main/resources/PDP.xml");;
 
-    public boolean XACML_response(Long userId, Long officeId, String action, String resource, Long recordId) throws CustomErrorException {
+    public RiskLevel decisionMakingEngine(Long userId, Long recordId,
+                                          String action, String resource,
+                                          Long currentOfficeId) throws CustomErrorException {
+        try {
+
+            if (!XACML_response(userId, currentOfficeId, action, resource, recordId)) {
+                return RiskLevel.Extreme;
+            }
+
+            double riskScore = myRiskEngine.evaluateRiskReturnRiskScore(userId, recordId, currentOfficeId);
+
+            return (riskScore >= 9.0) ? RiskLevel.Low :
+                   (riskScore >= 7.0) ? RiskLevel.Medium :
+                   (riskScore >= 5.0) ? RiskLevel.High :
+                                        RiskLevel.Extreme;
+        } catch (Exception ignore){
+            throw new CustomErrorException("Bad Request");
+        }
+    }
+
+    private boolean XACML_response(Long userId, Long officeId, String action, String resource, Long recordId) throws IOException{
         try (BasePdpEngine pdp = new BasePdpEngine(pdpEngineConf)){
 
             DecisionRequestBuilder<?> requestBuilder = pdp.newRequestBuilder(-1, -1);
@@ -62,23 +83,6 @@ public class My_PDP{
 
             DecisionRequest request = requestBuilder.build(false);
             return pdp.evaluate(request).getDecision() == DecisionType.PERMIT;
-        } catch (Exception ignore){
-            throw new CustomErrorException("Bad Request");
         }
-    }
-
-    public RiskLevel decisionMakingEngine(Long userId, Long recordId,
-                                          String action, String resource,
-                                          Long currentOfficeId) throws CustomErrorException {
-        if (!XACML_response(userId, currentOfficeId, action, resource, recordId)) {
-            return RiskLevel.Extreme;
-        }
-
-        double riskScore = myRiskEngine.evaluateRiskReturnRiskScore(userId, recordId, currentOfficeId);
-
-        return (riskScore >= 9.0) ? RiskLevel.Low :
-               (riskScore >= 7.0) ? RiskLevel.Medium :
-               (riskScore >= 5.0) ? RiskLevel.High :
-               RiskLevel.Extreme;
     }
 }

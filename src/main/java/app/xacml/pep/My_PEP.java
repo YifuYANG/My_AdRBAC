@@ -2,6 +2,7 @@ package app.xacml.pep;
 
 import app.constant.OperationType;
 import app.constant.ResourceType;
+import app.constant.RiskLevel;
 import app.constant.UserLevel;
 import app.dao.PEPDao;
 import app.exception.CustomErrorException;
@@ -77,14 +78,22 @@ public class My_PEP {
                 log.warn("Insufficient authorisation detected -> " + token);
                 throw new CustomErrorException("Access denied, you have no privileges to access this content.");
             }
-            // Check if the user is authorized to access the resource for the given conditions
-            if(!pdp.XACML_response(userId, officeId, operationType.toString(), resourceType.toString(),recordId)){
+            // Check risk level
+            RiskLevel riskLevel = pdp.decisionMakingEngine(userId,recordId,operationType.toString(),resourceType.toString(),officeId);
+            if(riskLevel == RiskLevel.Extreme || riskLevel == RiskLevel.High){
                 log.warn("Insufficient authorisation detected: User [" + pepDao.findUserByUserId(userId).getUserLevel()+"] "+
                         pepDao.findUserByUserId(userId).getLast_name()+ " " +pepDao.findUserByUserId(userId).getFirst_name() +
                         " at "+pepDao.findOfficeByOfficeId(officeId).getOfficeName());
-                throw new CustomErrorException("Access denied, may try it again later.");
+                log.warn("Risk level: "+ riskLevel);
+                throw new CustomErrorException("Risk level too high, access deny.");
             }
-            System.out.println("Risk level: " + pdp.decisionMakingEngine(userId,recordId,operationType.toString(),resourceType.toString(),officeId).toString());
+            if(riskLevel == RiskLevel.Medium && (operationType == OperationType.Write || operationType == OperationType.Delete)){
+                log.warn("Insufficient authorisation detected: User [" + pepDao.findUserByUserId(userId).getUserLevel()+"] "+
+                        pepDao.findUserByUserId(userId).getLast_name()+ " " +pepDao.findUserByUserId(userId).getFirst_name() +
+                        " at "+pepDao.findOfficeByOfficeId(officeId).getOfficeName());
+                log.warn("Risk level: "+ riskLevel);
+                throw new CustomErrorException("Risk level too high, access deny.");
+            }
             log.info("Token approved to execute " + method.getName());
             return joinPoint.proceed();
         } catch (Exception e){
