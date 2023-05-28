@@ -1,7 +1,7 @@
 package app.xacml.pdp;
 
+import app.constant.OperationType;
 import app.constant.RiskLevel;
-import app.constant.UserLevel;
 import app.exception.CustomErrorException;
 import app.xacml.pip.My_PIP;
 import app.xacml.risk_engine.MyRiskEngine;
@@ -37,24 +37,26 @@ public class My_PDP{
     }
     private final PdpEngineConfiguration pdpEngineConf = PdpEngineConfiguration.getInstance("src/main/resources/PDP.xml");;
 
-    public RiskLevel decisionMakingEngine(Long userId, Long recordId,
-                                          String action, String resource,
-                                          Long currentOfficeId) throws CustomErrorException {
+    public boolean decisionMakingEngine(Long userId, Long recordId,
+                                        OperationType operationType, String resource,
+                                        Long currentOfficeId) throws CustomErrorException {
         try {
-
-            if (!XACML_response(userId, currentOfficeId, action, resource, recordId)) {
-                return RiskLevel.Extreme;
-            }
-
-            double riskScore = myRiskEngine.evaluateRiskReturnRiskScore(userId, recordId, currentOfficeId);
-
-            return (riskScore >= 9.0) ? RiskLevel.Low :
-                   (riskScore >= 7.0) ? RiskLevel.Medium :
-                   (riskScore >= 5.0) ? RiskLevel.High :
-                                        RiskLevel.Extreme;
+            RiskLevel riskLevel = getRiskLevel(userId,recordId,currentOfficeId);
+            return XACML_response(userId, currentOfficeId, operationType.toString(), resource, recordId)
+                    && riskLevel != RiskLevel.Extreme
+                    && riskLevel != RiskLevel.High
+                    && (riskLevel != RiskLevel.Medium || (operationType != OperationType.Write && operationType != OperationType.Delete));
         } catch (Exception ignore){
             throw new CustomErrorException("Bad Request");
         }
+    }
+    private RiskLevel getRiskLevel(Long userId, Long recordId,
+                                          Long currentOfficeId){
+        double riskScore = myRiskEngine.evaluateRiskReturnRiskScore(userId, recordId, currentOfficeId);
+        return (riskScore >= 9.0) ? RiskLevel.Low :
+               (riskScore >= 7.0) ? RiskLevel.Medium :
+               (riskScore >= 5.0) ? RiskLevel.High :
+                                    RiskLevel.Extreme;
     }
 
     private boolean XACML_response(Long userId, Long officeId, String action, String resource, Long recordId) throws IOException{

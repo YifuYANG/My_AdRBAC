@@ -79,19 +79,10 @@ public class My_PEP {
                 throw new CustomErrorException("Access denied, you have no privileges to access this content.");
             }
             // Check risk level
-            RiskLevel riskLevel = pdp.decisionMakingEngine(userId,recordId,operationType.toString(),resourceType.toString(),officeId);
-            if(riskLevel == RiskLevel.Extreme || riskLevel == RiskLevel.High){
+            if(!pdp.decisionMakingEngine(userId,recordId,operationType,resourceType.toString(),officeId)){
                 log.warn("Insufficient authorisation detected: User [" + pepDao.findUserByUserId(userId).getUserLevel()+"] "+
                         pepDao.findUserByUserId(userId).getLast_name()+ " " +pepDao.findUserByUserId(userId).getFirst_name() +
                         " at "+pepDao.findOfficeByOfficeId(officeId).getOfficeName());
-                log.warn("Risk level: "+ riskLevel);
-                throw new CustomErrorException("Risk level too high, access deny.");
-            }
-            if(riskLevel == RiskLevel.Medium && (operationType == OperationType.Write || operationType == OperationType.Delete)){
-                log.warn("Insufficient authorisation detected: User [" + pepDao.findUserByUserId(userId).getUserLevel()+"] "+
-                        pepDao.findUserByUserId(userId).getLast_name()+ " " +pepDao.findUserByUserId(userId).getFirst_name() +
-                        " at "+pepDao.findOfficeByOfficeId(officeId).getOfficeName());
-                log.warn("Risk level: "+ riskLevel);
                 throw new CustomErrorException("Risk level too high, access deny.");
             }
             log.info("Token approved to execute " + method.getName());
