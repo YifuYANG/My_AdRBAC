@@ -37,29 +37,8 @@ public class My_PDP{
     }
     private final PdpEngineConfiguration pdpEngineConf = PdpEngineConfiguration.getInstance("src/main/resources/PDP.xml");;
 
-    public boolean decisionMakingEngine(Long userId, Long recordId,
-                                        OperationType operationType, String resource,
-                                        Long currentOfficeId) throws CustomErrorException {
-        try {
-            RiskLevel riskLevel = getRiskLevel(userId,recordId,currentOfficeId);
-            return XACML_response(userId, currentOfficeId, operationType.toString(), resource, recordId)
-                    && riskLevel != RiskLevel.Extreme
-                    && riskLevel != RiskLevel.High
-                    && (riskLevel != RiskLevel.Medium || (operationType != OperationType.Write && operationType != OperationType.Delete));
-        } catch (Exception ignore){
-            throw new CustomErrorException("Bad Request");
-        }
-    }
-    private RiskLevel getRiskLevel(Long userId, Long recordId,
-                                          Long currentOfficeId){
-        double riskScore = myRiskEngine.evaluateRiskReturnRiskScore(userId, recordId, currentOfficeId);
-        return (riskScore >= 9.0) ? RiskLevel.Low :
-               (riskScore >= 7.0) ? RiskLevel.Medium :
-               (riskScore >= 5.0) ? RiskLevel.High :
-                                    RiskLevel.Extreme;
-    }
 
-    private boolean XACML_response(Long userId, Long officeId, String action, String resource, Long recordId) throws IOException{
+    public boolean XACML_response(Long userId, Long officeId, String action, String resource, Long recordId) throws CustomErrorException {
         try (BasePdpEngine pdp = new BasePdpEngine(pdpEngineConf)){
 
             DecisionRequestBuilder<?> requestBuilder = pdp.newRequestBuilder(-1, -1);
@@ -83,8 +62,22 @@ public class My_PDP{
             AttributeBag<?> resourceSensitivityIdAttributeValues = Bags.singletonAttributeBag(StandardDatatypes.STRING, new StringValue(pip.getResourceSensitivityByRecordId(recordId).toString()));
             requestBuilder.putNamedAttributeIfAbsent(resourceSensitivityIdAttributeId, resourceSensitivityIdAttributeValues);
 
+            AttributeFqn riskIdAttributeId = AttributeFqns.newInstance(XACML_3_0_ENVIRONMENT.value(), Optional.empty(), "xacml:risk-level");
+            AttributeBag<?> riskIdAttributeValues = Bags.singletonAttributeBag(StandardDatatypes.STRING, new StringValue(getRiskLevel(userId,recordId,officeId).toString()));
+            requestBuilder.putNamedAttributeIfAbsent(riskIdAttributeId, riskIdAttributeValues);
             DecisionRequest request = requestBuilder.build(false);
             return pdp.evaluate(request).getDecision() == DecisionType.PERMIT;
+        } catch (Exception ignore){
+            throw new CustomErrorException("Bad Request");
         }
     }
+
+    private RiskLevel getRiskLevel(Long userId, Long recordId,
+                                   Long currentOfficeId){
+        double risk = myRiskEngine.evaluateRiskReturnRiskScore(userId, recordId, currentOfficeId);
+        return (risk <= 0.3) ? RiskLevel.Low :
+               (risk <= 0.5) ? RiskLevel.Medium :
+                               RiskLevel.High;
+    }
+
 }

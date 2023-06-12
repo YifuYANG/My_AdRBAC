@@ -108,7 +108,7 @@
             </AnyOf>
         </Target>
         <Rule RuleId="nurse_write_rule_1" Effect="Permit">
-            <Description>Nurses may write the patient's record at reception</Description>
+            <Description>Nurses may write the patient's record at reception when risk level is low</Description>
             <Condition>
                 <Apply FunctionId="urn:oasis:names:tc:xacml:1.0:function:and">
                     <Apply FunctionId="urn:oasis:names:tc:xacml:1.0:function:string-equal">
@@ -128,6 +128,15 @@
                                                  MustBePresent="true"/>
                         </Apply>
                         <AttributeValue DataType="http://www.w3.org/2001/XMLSchema#string">Reception</AttributeValue>
+                    </Apply>
+                    <Apply FunctionId="urn:oasis:names:tc:xacml:1.0:function:string-equal">
+                        <Apply FunctionId="urn:oasis:names:tc:xacml:1.0:function:string-one-and-only">
+                            <AttributeDesignator AttributeId="xacml:risk-level"
+                                                 DataType="http://www.w3.org/2001/XMLSchema#string"
+                                                 Category="urn:oasis:names:tc:xacml:3.0:attribute-category:environment"
+                                                 MustBePresent="true"/>
+                        </Apply>
+                        <AttributeValue DataType="http://www.w3.org/2001/XMLSchema#string">Low</AttributeValue>
                     </Apply>
                 </Apply>
             </Condition>
@@ -153,7 +162,7 @@
             </AnyOf>
         </Target>
         <Rule RuleId="nurse_read_rule_1" Effect="Permit">
-            <Description>Nurses can read the patient's record at the reception</Description>
+            <Description>Nurses can read the patient's record at the reception when risk level is medium or low</Description>
             <Condition>
                 <Apply FunctionId="urn:oasis:names:tc:xacml:1.0:function:and">
                     <Apply FunctionId="urn:oasis:names:tc:xacml:1.0:function:string-equal">
@@ -173,6 +182,28 @@
                                                  MustBePresent="true"/>
                         </Apply>
                         <AttributeValue DataType="http://www.w3.org/2001/XMLSchema#string">Reception</AttributeValue>
+                    </Apply>
+
+                    <Apply FunctionId="urn:oasis:names:tc:xacml:1.0:function:or">
+                        <Apply FunctionId="urn:oasis:names:tc:xacml:1.0:function:string-equal">
+                            <Apply FunctionId="urn:oasis:names:tc:xacml:1.0:function:string-one-and-only">
+                                <AttributeDesignator AttributeId="xacml:risk-level"
+                                                     DataType="http://www.w3.org/2001/XMLSchema#string"
+                                                     Category="urn:oasis:names:tc:xacml:3.0:attribute-category:environment"
+                                                     MustBePresent="true"/>
+                            </Apply>
+                            <AttributeValue DataType="http://www.w3.org/2001/XMLSchema#string">Low</AttributeValue>
+                        </Apply>
+
+                        <Apply FunctionId="urn:oasis:names:tc:xacml:1.0:function:string-equal">
+                            <Apply FunctionId="urn:oasis:names:tc:xacml:1.0:function:string-one-and-only">
+                                <AttributeDesignator AttributeId="xacml:risk-level"
+                                                     DataType="http://www.w3.org/2001/XMLSchema#string"
+                                                     Category="urn:oasis:names:tc:xacml:3.0:attribute-category:environment"
+                                                     MustBePresent="true"/>
+                            </Apply>
+                            <AttributeValue DataType="http://www.w3.org/2001/XMLSchema#string">Medium</AttributeValue>
+                        </Apply>
                     </Apply>
                 </Apply>
             </Condition>

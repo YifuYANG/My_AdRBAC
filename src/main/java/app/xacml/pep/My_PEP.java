@@ -78,8 +78,8 @@ public class My_PEP {
                 log.warn("Insufficient authorisation detected -> " + token);
                 throw new CustomErrorException("Access denied, you have no privileges to access this content.");
             }
-            // Check risk level
-            if(!pdp.decisionMakingEngine(userId,recordId,operationType,resourceType.toString(),officeId)){
+            // Check pdp and receives decision
+            if(!pdp.XACML_response(userId,officeId,operationType.toString(),resourceType.toString(),recordId)){
                 log.warn("Insufficient authorisation detected: User [" + pepDao.findUserByUserId(userId).getUserLevel()+"] "+
                         pepDao.findUserByUserId(userId).getLast_name()+ " " +pepDao.findUserByUserId(userId).getFirst_name() +
                         " at "+pepDao.findOfficeByOfficeId(officeId).getOfficeName());
