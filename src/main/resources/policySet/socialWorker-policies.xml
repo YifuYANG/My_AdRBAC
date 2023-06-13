@@ -1,0 +1,180 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<PolicySet xmlns="urn:oasis:names:tc:xacml:3.0:core:schema:wd-17"
+           PolicySetId="PPS:SocialWorker" Version="1.0"
+           PolicyCombiningAlgId="urn:oasis:names:tc:xacml:3.0:policy-combining-algorithm:deny-overrides">
+    <Description>Permissions specific to the Social Worker</Description>
+    <Target>
+        <AnyOf>
+            <AllOf>
+                <Match MatchId="urn:oasis:names:tc:xacml:1.0:function:string-equal">
+                    <AttributeValue DataType="http://www.w3.org/2001/XMLSchema#string">SocialWorker</AttributeValue>
+                    <AttributeDesignator AttributeId="urn:oasis:names:tc:xacml:1.0:subject:subject-id"
+                                         DataType="http://www.w3.org/2001/XMLSchema#string"
+                                         Category="urn:oasis:names:tc:xacml:1.0:subject-category:access-subject"
+                                         MustBePresent="true"/>
+                </Match>
+            </AllOf>
+        </AnyOf>
+    </Target>
+
+    <Policy xmlns="urn:oasis:names:tc:xacml:3.0:core:schema:wd-17"
+            PolicyId="SocialWorker-access-data"
+            Version="1.0"
+            RuleCombiningAlgId="urn:oasis:names:tc:xacml:3.0:rule-combining-algorithm:deny-overrides">
+        <Description>Policy for Social Worker to access data</Description>
+        <Target>
+        </Target>
+        <Rule RuleId="SocialWorker_access_data_rule_1" Effect="Deny">
+            <Condition>
+                <Apply FunctionId="urn:oasis:names:tc:xacml:1.0:function:string-equal">
+                    <Apply FunctionId="urn:oasis:names:tc:xacml:1.0:function:string-one-and-only">
+                        <AttributeDesignator AttributeId="resourceSensitivity:resourceSensitivity-id"
+                                             DataType="http://www.w3.org/2001/XMLSchema#string"
+                                             Category="urn:oasis:names:tc:xacml:3.0:attribute-category:resource"
+                                             MustBePresent="true"/>
+                    </Apply>
+                    <AttributeValue DataType="http://www.w3.org/2001/XMLSchema#string">Restricted</AttributeValue>
+                </Apply>
+            </Condition>
+        </Rule>
+
+        <Rule RuleId="SocialWorker_access_data_rule_2" Effect="Deny">
+            <Condition>
+                <Apply FunctionId="urn:oasis:names:tc:xacml:1.0:function:string-equal">
+                    <Apply FunctionId="urn:oasis:names:tc:xacml:1.0:function:string-one-and-only">
+                        <AttributeDesignator AttributeId="resourceSensitivity:resourceSensitivity-id"
+                                             DataType="http://www.w3.org/2001/XMLSchema#string"
+                                             Category="urn:oasis:names:tc:xacml:3.0:attribute-category:resource"
+                                             MustBePresent="true"/>
+                    </Apply>
+                    <AttributeValue DataType="http://www.w3.org/2001/XMLSchema#string">Confidential</AttributeValue>
+                </Apply>
+            </Condition>
+        </Rule>
+    </Policy>
+
+    <Policy xmlns="urn:oasis:names:tc:xacml:3.0:core:schema:wd-17"
+            PolicyId="SocialWorker-delete"
+            Version="1.0"
+            RuleCombiningAlgId="urn:oasis:names:tc:xacml:3.0:rule-combining-algorithm:deny-overrides">
+
+        <Description>Policy for Social Worker to delete data</Description>
+        <Target>
+            <AnyOf>
+                <AllOf>
+                    <Match MatchId="urn:oasis:names:tc:xacml:1.0:function:string-equal">
+                        <AttributeValue DataType="http://www.w3.org/2001/XMLSchema#string">Delete</AttributeValue>
+                        <AttributeDesignator AttributeId="urn:oasis:names:tc:xacml:1.0:action:action-id"
+                                             Category="urn:oasis:names:tc:xacml:3.0:attribute-category:action"
+                                             DataType="http://www.w3.org/2001/XMLSchema#string"
+                                             MustBePresent="true"/>
+                    </Match>
+                </AllOf>
+            </AnyOf>
+        </Target>
+        <Rule RuleId="SocialWorker_delete_rule_1" Effect="Deny">
+            <Description>Social Worker can not delete the patient's record</Description>
+            <Condition>
+                <Apply FunctionId="urn:oasis:names:tc:xacml:1.0:function:string-equal">
+                    <Apply FunctionId="urn:oasis:names:tc:xacml:1.0:function:string-one-and-only">
+                        <AttributeDesignator AttributeId="urn:oasis:names:tc:xacml:1.0:resource:resource-id"
+                                             DataType="http://www.w3.org/2001/XMLSchema#string"
+                                             Category="urn:oasis:names:tc:xacml:3.0:attribute-category:resource"
+                                             MustBePresent="true"/>
+                    </Apply>
+                    <AttributeValue DataType="http://www.w3.org/2001/XMLSchema#string">MedicalRecord</AttributeValue>
+                </Apply>
+            </Condition>
+        </Rule>
+    </Policy>
+
+    <Policy xmlns="urn:oasis:names:tc:xacml:3.0:core:schema:wd-17"
+            PolicyId="SocialWorker-write"
+            Version="1.0"
+            RuleCombiningAlgId="urn:oasis:names:tc:xacml:3.0:rule-combining-algorithm:deny-overrides">
+
+        <Description>Policy for Social Worker to write data</Description>
+        <Target>
+            <AnyOf>
+                <AllOf>
+                    <Match MatchId="urn:oasis:names:tc:xacml:1.0:function:string-equal">
+                        <AttributeValue DataType="http://www.w3.org/2001/XMLSchema#string">Write</AttributeValue>
+                        <AttributeDesignator AttributeId="urn:oasis:names:tc:xacml:1.0:action:action-id"
+                                             Category="urn:oasis:names:tc:xacml:3.0:attribute-category:action"
+                                             DataType="http://www.w3.org/2001/XMLSchema#string"
+                                             MustBePresent="true"/>
+                    </Match>
+                </AllOf>
+            </AnyOf>
+        </Target>
+        <Rule RuleId="SocialWorker_write_rule_1" Effect="Deny">
+            <Description>Social Worker can not write the patient's record</Description>
+            <Condition>
+                <Apply FunctionId="urn:oasis:names:tc:xacml:1.0:function:string-equal">
+                    <Apply FunctionId="urn:oasis:names:tc:xacml:1.0:function:string-one-and-only">
+                        <AttributeDesignator AttributeId="urn:oasis:names:tc:xacml:1.0:resource:resource-id"
+                                             DataType="http://www.w3.org/2001/XMLSchema#string"
+                                             Category="urn:oasis:names:tc:xacml:3.0:attribute-category:resource"
+                                             MustBePresent="true"/>
+                    </Apply>
+                    <AttributeValue DataType="http://www.w3.org/2001/XMLSchema#string">MedicalRecord</AttributeValue>
+                </Apply>
+            </Condition>
+        </Rule>
+    </Policy>
+
+    <Policy xmlns="urn:oasis:names:tc:xacml:3.0:core:schema:wd-17"
+            PolicyId="SocialWorker-read"
+            Version="1.0"
+            RuleCombiningAlgId="urn:oasis:names:tc:xacml:3.0:rule-combining-algorithm:deny-overrides">
+        <Description>Policy for Social Worker to read data</Description>
+        <Target>
+            <AnyOf>
+                <AllOf>
+                    <Match MatchId="urn:oasis:names:tc:xacml:1.0:function:string-equal">
+                        <AttributeValue DataType="http://www.w3.org/2001/XMLSchema#string">Read</AttributeValue>
+                        <AttributeDesignator AttributeId="urn:oasis:names:tc:xacml:1.0:action:action-id"
+                                             Category="urn:oasis:names:tc:xacml:3.0:attribute-category:action"
+                                             DataType="http://www.w3.org/2001/XMLSchema#string"
+                                             MustBePresent="true"/>
+                    </Match>
+                </AllOf>
+            </AnyOf>
+        </Target>
+        <Rule RuleId="SocialWorker_read_rule_1" Effect="Permit">
+            <Description>Social Worker can read the patient's record at the reception when risk level is low</Description>
+            <Condition>
+                <Apply FunctionId="urn:oasis:names:tc:xacml:1.0:function:and">
+                    <Apply FunctionId="urn:oasis:names:tc:xacml:1.0:function:string-equal">
+                        <Apply FunctionId="urn:oasis:names:tc:xacml:1.0:function:string-one-and-only">
+                            <AttributeDesignator AttributeId="urn:oasis:names:tc:xacml:1.0:resource:resource-id"
+                                                 DataType="http://www.w3.org/2001/XMLSchema#string"
+                                                 Category="urn:oasis:names:tc:xacml:3.0:attribute-category:resource"
+                                                 MustBePresent="true"/>
+                        </Apply>
+                        <AttributeValue DataType="http://www.w3.org/2001/XMLSchema#string">MedicalRecord</AttributeValue>
+                    </Apply>
+                    <Apply FunctionId="urn:oasis:names:tc:xacml:1.0:function:string-equal">
+                        <Apply FunctionId="urn:oasis:names:tc:xacml:1.0:function:string-one-and-only">
+                            <AttributeDesignator AttributeId="urn:oasis:names:tc:xacml:1.0:environment:environment-id"
+                                                 DataType="http://www.w3.org/2001/XMLSchema#string"
+                                                 Category="urn:oasis:names:tc:xacml:3.0:attribute-category:environment"
+                                                 MustBePresent="true"/>
+                        </Apply>
+                        <AttributeValue DataType="http://www.w3.org/2001/XMLSchema#string">Reception</AttributeValue>
+                    </Apply>
+
+                    <Apply FunctionId="urn:oasis:names:tc:xacml:1.0:function:string-equal">
+                        <Apply FunctionId="urn:oasis:names:tc:xacml:1.0:function:string-one-and-only">
+                            <AttributeDesignator AttributeId="xacml:risk-level"
+                                                 DataType="http://www.w3.org/2001/XMLSchema#string"
+                                                 Category="urn:oasis:names:tc:xacml:3.0:attribute-category:environment"
+                                                 MustBePresent="true"/>
+                        </Apply>
+                        <AttributeValue DataType="http://www.w3.org/2001/XMLSchema#string">Low</AttributeValue>
+                    </Apply>
+                </Apply>
+            </Condition>
+        </Rule>
+    </Policy>
+</PolicySet>

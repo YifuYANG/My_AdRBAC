@@ -1,6 +1,6 @@
 package app.xacml.risk_engine;
 
-import app.constant.ResourceSensitivity;
+
 import app.model.RiskHistory;
 import app.xacml.pip.My_PIP;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -49,7 +49,7 @@ public class MyRiskEngine {
 
     private double getOfficeSiteRisk(Long userId, Long currentOfficeId){
         double risk = 0.0;
-        if(!pip.getOfficeNameByUserId(userId).equals(pip.getOfficeNameById(currentOfficeId))){
+        if(!pip.getOfficeNameByUserID(userId).equals(pip.getOfficeNameById(currentOfficeId))){
             risk = 0.8;
         }
         System.out.println("Office Site: "+risk);
@@ -59,8 +59,10 @@ public class MyRiskEngine {
     private double getSensitiveTimePeriodRisk(Long userId){
         double risk = 0.8;
         LocalTime currentTime = LocalTime.now();
-        if (currentTime.isAfter(pip.getStartTimeByUserId(userId)) && currentTime.isBefore(pip.getEndTimeByUserId(userId))){
-            risk = 0.0;
+        if(pip.getStartTimeByUserID(userId)!=null && pip.getEndTimeByUserID(userId)!=null){
+            if (currentTime.isAfter(pip.getStartTimeByUserId(userId)) && currentTime.isBefore(pip.getEndTimeByUserId(userId))){
+                risk = 0.0;
+            }
         }
         System.out.println("Time: "+ risk);
         return risk;

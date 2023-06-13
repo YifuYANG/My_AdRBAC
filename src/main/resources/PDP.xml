@@ -5,6 +5,8 @@
     <policyLocation>src/main/resources/policySet/admin-policies.xml</policyLocation>
     <policyLocation>src/main/resources/policySet/doctor-policies.xml</policyLocation>
     <policyLocation>src/main/resources/policySet/nurse-policies.xml</policyLocation>
+    <policyLocation>src/main/resources/policySet/policeOfficer-policies.xml</policyLocation>
+    <policyLocation>src/main/resources/policySet/socialWorker-policies.xml</policyLocation>
 </policyProvider>
     <rootPolicyRef>root</rootPolicyRef>
 </pdp>

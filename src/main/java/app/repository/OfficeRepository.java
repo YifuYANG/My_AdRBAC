@@ -6,6 +6,8 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
+import java.util.Optional;
+
 @Repository
 public interface OfficeRepository extends JpaRepository<Office, Long> {
     @Query("select o from Office o where o.officeName = :officeName")
@@ -16,4 +18,7 @@ public interface OfficeRepository extends JpaRepository<Office, Long> {
     //
     @Query("select o from Office o where o.officeId = :officeId")
     Office findByOfficeId(@Param("officeId") Long officeId);
+
+    @Query("SELECT o FROM Office o WHERE o.userId = :userId")
+    Optional<Office> findByUserID(@Param("userId") Long userId);
 }
