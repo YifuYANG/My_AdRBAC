@@ -18,42 +18,6 @@
     </Target>
 
     <Policy xmlns="urn:oasis:names:tc:xacml:3.0:core:schema:wd-17"
-            PolicyId="SocialWorker-access-data"
-            Version="1.0"
-            RuleCombiningAlgId="urn:oasis:names:tc:xacml:3.0:rule-combining-algorithm:deny-overrides">
-        <Description>Policy for Social Worker to access data</Description>
-        <Target>
-        </Target>
-        <Rule RuleId="SocialWorker_access_data_rule_1" Effect="Deny">
-            <Condition>
-                <Apply FunctionId="urn:oasis:names:tc:xacml:1.0:function:string-equal">
-                    <Apply FunctionId="urn:oasis:names:tc:xacml:1.0:function:string-one-and-only">
-                        <AttributeDesignator AttributeId="resourceSensitivity:resourceSensitivity-id"
-                                             DataType="http://www.w3.org/2001/XMLSchema#string"
-                                             Category="urn:oasis:names:tc:xacml:3.0:attribute-category:resource"
-                                             MustBePresent="true"/>
-                    </Apply>
-                    <AttributeValue DataType="http://www.w3.org/2001/XMLSchema#string">Restricted</AttributeValue>
-                </Apply>
-            </Condition>
-        </Rule>
-
-        <Rule RuleId="SocialWorker_access_data_rule_2" Effect="Deny">
-            <Condition>
-                <Apply FunctionId="urn:oasis:names:tc:xacml:1.0:function:string-equal">
-                    <Apply FunctionId="urn:oasis:names:tc:xacml:1.0:function:string-one-and-only">
-                        <AttributeDesignator AttributeId="resourceSensitivity:resourceSensitivity-id"
-                                             DataType="http://www.w3.org/2001/XMLSchema#string"
-                                             Category="urn:oasis:names:tc:xacml:3.0:attribute-category:resource"
-                                             MustBePresent="true"/>
-                    </Apply>
-                    <AttributeValue DataType="http://www.w3.org/2001/XMLSchema#string">Confidential</AttributeValue>
-                </Apply>
-            </Condition>
-        </Rule>
-    </Policy>
-
-    <Policy xmlns="urn:oasis:names:tc:xacml:3.0:core:schema:wd-17"
             PolicyId="SocialWorker-delete"
             Version="1.0"
             RuleCombiningAlgId="urn:oasis:names:tc:xacml:3.0:rule-combining-algorithm:deny-overrides">
@@ -126,7 +90,7 @@
     <Policy xmlns="urn:oasis:names:tc:xacml:3.0:core:schema:wd-17"
             PolicyId="SocialWorker-read"
             Version="1.0"
-            RuleCombiningAlgId="urn:oasis:names:tc:xacml:3.0:rule-combining-algorithm:deny-overrides">
+            RuleCombiningAlgId="urn:oasis:names:tc:xacml:3.0:rule-combining-algorithm:deny-unless-permit">
         <Description>Policy for Social Worker to read data</Description>
         <Target>
             <AnyOf>
@@ -142,7 +106,7 @@
             </AnyOf>
         </Target>
         <Rule RuleId="SocialWorker_read_rule_1" Effect="Permit">
-            <Description>Social Worker can read the patient's record at the reception when risk level is low</Description>
+            <Description>Social Worker with privilege can read the Internal patient's record when risk level is low or medium</Description>
             <Condition>
                 <Apply FunctionId="urn:oasis:names:tc:xacml:1.0:function:and">
                     <Apply FunctionId="urn:oasis:names:tc:xacml:1.0:function:string-equal">
@@ -154,24 +118,70 @@
                         </Apply>
                         <AttributeValue DataType="http://www.w3.org/2001/XMLSchema#string">MedicalRecord</AttributeValue>
                     </Apply>
-                    <Apply FunctionId="urn:oasis:names:tc:xacml:1.0:function:string-equal">
-                        <Apply FunctionId="urn:oasis:names:tc:xacml:1.0:function:string-one-and-only">
-                            <AttributeDesignator AttributeId="urn:oasis:names:tc:xacml:1.0:environment:environment-id"
-                                                 DataType="http://www.w3.org/2001/XMLSchema#string"
-                                                 Category="urn:oasis:names:tc:xacml:3.0:attribute-category:environment"
-                                                 MustBePresent="true"/>
-                        </Apply>
-                        <AttributeValue DataType="http://www.w3.org/2001/XMLSchema#string">Reception</AttributeValue>
-                    </Apply>
 
                     <Apply FunctionId="urn:oasis:names:tc:xacml:1.0:function:string-equal">
                         <Apply FunctionId="urn:oasis:names:tc:xacml:1.0:function:string-one-and-only">
-                            <AttributeDesignator AttributeId="xacml:risk-level"
+                            <AttributeDesignator AttributeId="resourceSensitivity:resourceSensitivity-id"
                                                  DataType="http://www.w3.org/2001/XMLSchema#string"
-                                                 Category="urn:oasis:names:tc:xacml:3.0:attribute-category:environment"
+                                                 Category="urn:oasis:names:tc:xacml:3.0:attribute-category:resource"
                                                  MustBePresent="true"/>
                         </Apply>
-                        <AttributeValue DataType="http://www.w3.org/2001/XMLSchema#string">Low</AttributeValue>
+                        <AttributeValue DataType="http://www.w3.org/2001/XMLSchema#string">Internal</AttributeValue>
+                    </Apply>
+
+                    <Apply FunctionId="urn:oasis:names:tc:xacml:1.0:function:or">
+
+                        <Apply FunctionId="urn:oasis:names:tc:xacml:1.0:function:string-equal">
+                            <Apply FunctionId="urn:oasis:names:tc:xacml:1.0:function:string-one-and-only">
+                                <AttributeDesignator AttributeId="accessLevel:accessLevel-id"
+                                                     DataType="http://www.w3.org/2001/XMLSchema#string"
+                                                     Category="urn:oasis:names:tc:xacml:1.0:subject-category:access-subject"
+                                                     MustBePresent="true"/>
+                            </Apply>
+                            <AttributeValue DataType="http://www.w3.org/2001/XMLSchema#string">Normal</AttributeValue>
+                        </Apply>
+
+                        <Apply FunctionId="urn:oasis:names:tc:xacml:1.0:function:string-equal">
+                            <Apply FunctionId="urn:oasis:names:tc:xacml:1.0:function:string-one-and-only">
+                                <AttributeDesignator AttributeId="accessLevel:accessLevel-id"
+                                                     DataType="http://www.w3.org/2001/XMLSchema#string"
+                                                     Category="urn:oasis:names:tc:xacml:1.0:subject-category:access-subject"
+                                                     MustBePresent="true"/>
+                            </Apply>
+                            <AttributeValue DataType="http://www.w3.org/2001/XMLSchema#string">Advanced</AttributeValue>
+                        </Apply>
+
+                        <Apply FunctionId="urn:oasis:names:tc:xacml:1.0:function:string-equal">
+                            <Apply FunctionId="urn:oasis:names:tc:xacml:1.0:function:string-one-and-only">
+                                <AttributeDesignator AttributeId="accessLevel:accessLevel-id"
+                                                     DataType="http://www.w3.org/2001/XMLSchema#string"
+                                                     Category="urn:oasis:names:tc:xacml:1.0:subject-category:access-subject"
+                                                     MustBePresent="true"/>
+                            </Apply>
+                            <AttributeValue DataType="http://www.w3.org/2001/XMLSchema#string">Premium</AttributeValue>
+                        </Apply>
+                    </Apply>
+
+                    <Apply FunctionId="urn:oasis:names:tc:xacml:1.0:function:or">
+                        <Apply FunctionId="urn:oasis:names:tc:xacml:1.0:function:string-equal">
+                            <Apply FunctionId="urn:oasis:names:tc:xacml:1.0:function:string-one-and-only">
+                                <AttributeDesignator AttributeId="xacml:risk-level"
+                                                     DataType="http://www.w3.org/2001/XMLSchema#string"
+                                                     Category="urn:oasis:names:tc:xacml:3.0:attribute-category:environment"
+                                                     MustBePresent="true"/>
+                            </Apply>
+                            <AttributeValue DataType="http://www.w3.org/2001/XMLSchema#string">Low</AttributeValue>
+                        </Apply>
+
+                        <Apply FunctionId="urn:oasis:names:tc:xacml:1.0:function:string-equal">
+                            <Apply FunctionId="urn:oasis:names:tc:xacml:1.0:function:string-one-and-only">
+                                <AttributeDesignator AttributeId="xacml:risk-level"
+                                                     DataType="http://www.w3.org/2001/XMLSchema#string"
+                                                     Category="urn:oasis:names:tc:xacml:3.0:attribute-category:environment"
+                                                     MustBePresent="true"/>
+                            </Apply>
+                            <AttributeValue DataType="http://www.w3.org/2001/XMLSchema#string">Medium</AttributeValue>
+                        </Apply>
                     </Apply>
                 </Apply>
             </Condition>

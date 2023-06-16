@@ -1,7 +1,6 @@
 package app.xacml.risk_engine;
 
 
-import app.constant.AccessLevel;
 import app.constant.OperationType;
 import app.constant.ResourceSensitivity;
 import app.constant.UserLevel;
@@ -72,7 +71,7 @@ public class MyRiskEngine {
         return risk;
     }
 
-    private double getAccessLevelRisk(Long userId, Long recordId){
+    private double getAccessRisk(Long userId, Long recordId){
         UserLevel userRole = pip.getUserRole(userId);
         ResourceSensitivity resourceSensitivity = pip.getResourceSensitivityByRecordId(recordId);
         if (userRole == UserLevel.Nurse) {
@@ -101,6 +100,8 @@ public class MyRiskEngine {
     }
     private double getContextualRisk(Long userId, Long currentOfficeId){
         if(getSensitiveTimePeriod(userId) && getOfficeSite(userId, currentOfficeId)){
+            return 0.0;
+        } else if(getSensitiveTimePeriod(userId) && !getOfficeSite(userId, currentOfficeId)){
             return 0.2;
         } else if(!getSensitiveTimePeriod(userId) && getOfficeSite(userId, currentOfficeId)){
             return 0.4;

@@ -65,6 +65,11 @@ public class My_PDP{
             AttributeFqn riskIdAttributeId = AttributeFqns.newInstance(XACML_3_0_ENVIRONMENT.value(), Optional.empty(), "xacml:risk-level");
             AttributeBag<?> riskIdAttributeValues = Bags.singletonAttributeBag(StandardDatatypes.STRING, new StringValue(getRiskLevel(userId,recordId,officeId).toString()));
             requestBuilder.putNamedAttributeIfAbsent(riskIdAttributeId, riskIdAttributeValues);
+
+            AttributeFqn accessLevelIdAttributeId = AttributeFqns.newInstance(XACML_1_0_ACCESS_SUBJECT.value(), Optional.empty(), "accessLevel:accessLevel-id");
+            AttributeBag<?> accessLevelIdAttributeValues = Bags.singletonAttributeBag(StandardDatatypes.STRING, new StringValue(pip.getUserAccessLevelByUserId(userId).toString()));
+            requestBuilder.putNamedAttributeIfAbsent(accessLevelIdAttributeId, accessLevelIdAttributeValues);
+
             DecisionRequest request = requestBuilder.build(false);
             return pdp.evaluate(request).getDecision() == DecisionType.PERMIT;
         } catch (Exception ignore){
