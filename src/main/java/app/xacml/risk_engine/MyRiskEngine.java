@@ -23,16 +23,31 @@ public class MyRiskEngine {
     }
 
     public double evaluateRiskReturnRiskScore(Long userId, Long recordId,
-                                              Long currentOfficeId){
+                                              Long currentOfficeId,OperationType operationType){
         final double officeSiteWeightage = 0.3;
         final double sensitiveTimePeriodWeightage = 0.3;
-        final double userHistoryWeightage = 0.4;
+
+        final double operationWeightage = 0.1;
+        final double userHistoryWeightage = 0.1;
+        final double accessWeightage = 0.4;
+        final double contextualWeightage = 0.4;
+
+        System.out.println("access risk: "+getAccessRisk(userId,recordId)* accessWeightage);
+        System.out.println("operation risk: "+getOperationRisk(operationType)* operationWeightage);
+        System.out.println("contextual risk: "+getContextualRisk(userId,currentOfficeId)* contextualWeightage);
+        System.out.println("user history risk: "+getUserHistoryRisk(userId)* userHistoryWeightage);
+
+        System.out.print("New Risk is: ");
+        System.out.println(
+                (getAccessRisk(userId,recordId) * accessWeightage)+
+                (getOperationRisk(operationType) * operationWeightage)+
+                (getContextualRisk(userId,currentOfficeId) * contextualWeightage)+
+                (getUserHistoryRisk(userId) * userHistoryWeightage));
 
         double Risk = (getUserHistoryRisk(userId) * userHistoryWeightage) +
                 (getSensitiveTimePeriodRisk(userId) * sensitiveTimePeriodWeightage) +
                 (getOfficeSiteRisk(userId,currentOfficeId) * officeSiteWeightage);
 
-        System.out.println("Risk: "+Risk);
         return Risk;
     }
 
@@ -46,7 +61,6 @@ public class MyRiskEngine {
                 risk = 0.2;
             }
         }
-        System.out.println("User History: "+risk);
         return risk;
     }
 
@@ -55,7 +69,6 @@ public class MyRiskEngine {
         if(!pip.getOfficeNameByUserID(userId).equals(pip.getOfficeNameById(currentOfficeId))){
             risk = 0.8;
         }
-        System.out.println("Office Site: "+risk);
         return risk;
     }
 
@@ -67,7 +80,6 @@ public class MyRiskEngine {
                 risk = 0.0;
             }
         }
-        System.out.println("Time: "+ risk);
         return risk;
     }
 
@@ -76,37 +88,49 @@ public class MyRiskEngine {
         ResourceSensitivity resourceSensitivity = pip.getResourceSensitivityByRecordId(recordId);
         if (userRole == UserLevel.Nurse) {
             if (resourceSensitivity == ResourceSensitivity.Confidential) {
-                return 0.2;
+                return 0.6;
             }
             if (resourceSensitivity == ResourceSensitivity.Restricted) {
-                return 0.4;
+                return 0.8;
             }
         }
-        if (userRole == UserLevel.Doctor && resourceSensitivity == ResourceSensitivity.Restricted) {
-            return 0.4;
-        }
-        if (userRole == UserLevel.SocialWorker) {
+        if (userRole == UserLevel.Doctor) {
             if (resourceSensitivity == ResourceSensitivity.Confidential) {
                 return 0.4;
             }
             if (resourceSensitivity == ResourceSensitivity.Restricted) {
-                return 0.7;
+                return 0.6;
+            }
+        }
+        if (userRole == UserLevel.SocialWorker) {
+            if (resourceSensitivity == ResourceSensitivity.Confidential) {
+                return 0.6;
+            }
+            if (resourceSensitivity == ResourceSensitivity.Restricted) {
+                return 0.8;
             }
         }
         if (userRole == UserLevel.PoliceOfficer && resourceSensitivity == ResourceSensitivity.Restricted) {
-            return 0.4;
+            return 0.6;
         }
         return 0.0;
     }
     private double getContextualRisk(Long userId, Long currentOfficeId){
-        if(getSensitiveTimePeriod(userId) && getOfficeSite(userId, currentOfficeId)){
-            return 0.0;
-        } else if(getSensitiveTimePeriod(userId) && !getOfficeSite(userId, currentOfficeId)){
-            return 0.2;
-        } else if(!getSensitiveTimePeriod(userId) && getOfficeSite(userId, currentOfficeId)){
-            return 0.4;
+        boolean onDuty = isInSensitiveTimePeriod(userId);
+        boolean sameOfficeSite = isInSameOfficeSite(userId, currentOfficeId);
+        boolean sameOfficeType = isInSameOfficeType(userId, currentOfficeId);
+        if (onDuty) {
+            if (sameOfficeSite) {
+                return 0.0;
+            } else {
+                return sameOfficeType ? 0.2 : 0.4;
+            }
         } else {
-            return 0.7;
+            if (sameOfficeSite) {
+                return 0.4;
+            } else {
+                return sameOfficeType ? 0.6 : 0.8;
+            }
         }
     }
 
@@ -117,7 +141,7 @@ public class MyRiskEngine {
             case Delete -> 0.7;
         };
     }
-    private boolean getSensitiveTimePeriod(Long userId){
+    private boolean isInSensitiveTimePeriod(Long userId){
         LocalTime currentTime = LocalTime.now();
         if(pip.getStartTimeByUserID(userId)!=null && pip.getEndTimeByUserID(userId)!=null){
             return currentTime.isAfter(pip.getStartTimeByUserId(userId)) && currentTime.isBefore(pip.getEndTimeByUserId(userId));
@@ -125,7 +149,11 @@ public class MyRiskEngine {
         return false;
     }
 
-    private boolean getOfficeSite(Long userId, Long currentOfficeId){
+    private boolean isInSameOfficeSite(Long userId, Long currentOfficeId){
         return pip.getOfficeNameByUserID(userId).equals(pip.getOfficeNameById(currentOfficeId));
+    }
+
+    private boolean isInSameOfficeType(Long userId, Long currentOfficeId){
+        return pip.getOfficeTypeById(currentOfficeId) == pip.getOfficeTypeByUserID(userId);
     }
 }

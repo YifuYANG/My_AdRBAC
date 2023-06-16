@@ -88,4 +88,9 @@ public class My_PIP {
     public AccessLevel getUserAccessLevelByUserId(Long userId){
         return userRepository.findByUserId(userId).getAccessLevel();
     }
+
+    public OfficeType getOfficeTypeByUserID(Long userId){
+        Optional<Office> officeOptional = officeRepository.findByUserID(userId);
+        return officeOptional.map(Office::getOfficeType).orElse(null);
+    }
 }

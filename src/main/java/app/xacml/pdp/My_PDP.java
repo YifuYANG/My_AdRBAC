@@ -38,7 +38,7 @@ public class My_PDP{
     private final PdpEngineConfiguration pdpEngineConf = PdpEngineConfiguration.getInstance("src/main/resources/PDP.xml");;
 
 
-    public boolean XACML_response(Long userId, Long officeId, String action, String resource, Long recordId) throws CustomErrorException {
+    public boolean XACML_response(Long userId, Long officeId, OperationType action, String resource, Long recordId) throws CustomErrorException {
         try (BasePdpEngine pdp = new BasePdpEngine(pdpEngineConf)){
 
             DecisionRequestBuilder<?> requestBuilder = pdp.newRequestBuilder(-1, -1);
@@ -51,7 +51,7 @@ public class My_PDP{
             requestBuilder.putNamedAttributeIfAbsent(environmentIdAttributeId, environmentIdAttributeValues);
 
             AttributeFqn actionIdAttributeId = AttributeFqns.newInstance(XACML_3_0_ACTION.value(), Optional.empty(), XacmlAttributeId.XACML_1_0_ACTION_ID.value());
-            AttributeBag<?> actionIdAttributeValues = Bags.singletonAttributeBag(StandardDatatypes.STRING, new StringValue(action));
+            AttributeBag<?> actionIdAttributeValues = Bags.singletonAttributeBag(StandardDatatypes.STRING, new StringValue(action.toString()));
             requestBuilder.putNamedAttributeIfAbsent(actionIdAttributeId, actionIdAttributeValues);
 
             AttributeFqn resourceIdAttributeId = AttributeFqns.newInstance(XACML_3_0_RESOURCE.value(), Optional.empty(), "urn:oasis:names:tc:xacml:1.0:resource:resource-id");
@@ -63,7 +63,7 @@ public class My_PDP{
             requestBuilder.putNamedAttributeIfAbsent(resourceSensitivityIdAttributeId, resourceSensitivityIdAttributeValues);
 
             AttributeFqn riskIdAttributeId = AttributeFqns.newInstance(XACML_3_0_ENVIRONMENT.value(), Optional.empty(), "xacml:risk-level");
-            AttributeBag<?> riskIdAttributeValues = Bags.singletonAttributeBag(StandardDatatypes.STRING, new StringValue(getRiskLevel(userId,recordId,officeId).toString()));
+            AttributeBag<?> riskIdAttributeValues = Bags.singletonAttributeBag(StandardDatatypes.STRING, new StringValue(getRiskLevel(userId,recordId,officeId,action).toString()));
             requestBuilder.putNamedAttributeIfAbsent(riskIdAttributeId, riskIdAttributeValues);
 
             AttributeFqn accessLevelIdAttributeId = AttributeFqns.newInstance(XACML_1_0_ACCESS_SUBJECT.value(), Optional.empty(), "accessLevel:accessLevel-id");
@@ -78,8 +78,8 @@ public class My_PDP{
     }
 
     private RiskLevel getRiskLevel(Long userId, Long recordId,
-                                   Long currentOfficeId){
-        double risk = myRiskEngine.evaluateRiskReturnRiskScore(userId, recordId, currentOfficeId);
+                                   Long currentOfficeId,OperationType operationType){
+        double risk = myRiskEngine.evaluateRiskReturnRiskScore(userId, recordId, currentOfficeId,operationType);
         return (risk <= 0.3) ? RiskLevel.Low :
                (risk <= 0.5) ? RiskLevel.Medium :
                                RiskLevel.High;
