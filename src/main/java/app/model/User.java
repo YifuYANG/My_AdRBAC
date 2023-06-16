@@ -1,5 +1,6 @@
 package app.model;
 
+import app.constant.AccessLevel;
 import app.constant.UserLevel;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -20,4 +21,5 @@ public class User {
     @NotBlank
     private String first_name, last_name, password, email;
     private UserLevel userLevel;
+    private AccessLevel accessLevel;
 }

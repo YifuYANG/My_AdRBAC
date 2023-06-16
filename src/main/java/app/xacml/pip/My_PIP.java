@@ -1,5 +1,6 @@
 package app.xacml.pip;
 
+import app.constant.AccessLevel;
 import app.constant.OfficeType;
 import app.constant.ResourceSensitivity;
 import app.constant.UserLevel;
@@ -82,5 +83,9 @@ public class My_PIP {
     public LocalTime getEndTimeByUserID(Long userId){
         Optional<TimeTable> endtimeOptional= timeTableRepository.findByUserID(userId);
         return endtimeOptional.map(TimeTable::getEndTime).orElse(null);
+    }
+
+    public AccessLevel getUserAccessLevelByUserId(Long userId){
+        return userRepository.findByUserId(userId).getAccessLevel();
     }
 }

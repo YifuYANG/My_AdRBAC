@@ -1,6 +1,10 @@
 package app.xacml.risk_engine;
 
 
+import app.constant.AccessLevel;
+import app.constant.OperationType;
+import app.constant.ResourceSensitivity;
+import app.constant.UserLevel;
 import app.model.RiskHistory;
 import app.xacml.pip.My_PIP;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -34,13 +38,13 @@ public class MyRiskEngine {
     }
 
     private double getUserHistoryRisk(Long userId){
-        double risk = 1.0;
+        double risk = 0.7;
         List<RiskHistory> riskHistoryList = pip.getRiskHistoryByUserId(userId);
         if (riskHistoryList!=null){
             if(riskHistoryList.isEmpty()){
                 risk = 0;
             } else if(riskHistoryList.size()<=3){
-                risk = 0.6;
+                risk = 0.2;
             }
         }
         System.out.println("User History: "+risk);
@@ -66,5 +70,61 @@ public class MyRiskEngine {
         }
         System.out.println("Time: "+ risk);
         return risk;
+    }
+
+    private double getAccessLevelRisk(Long userId, Long recordId){
+        UserLevel userRole = pip.getUserRole(userId);
+        ResourceSensitivity resourceSensitivity = pip.getResourceSensitivityByRecordId(recordId);
+        if (userRole == UserLevel.Nurse) {
+            if (resourceSensitivity == ResourceSensitivity.Confidential) {
+                return 0.2;
+            }
+            if (resourceSensitivity == ResourceSensitivity.Restricted) {
+                return 0.4;
+            }
+        }
+        if (userRole == UserLevel.Doctor && resourceSensitivity == ResourceSensitivity.Restricted) {
+            return 0.4;
+        }
+        if (userRole == UserLevel.SocialWorker) {
+            if (resourceSensitivity == ResourceSensitivity.Confidential) {
+                return 0.4;
+            }
+            if (resourceSensitivity == ResourceSensitivity.Restricted) {
+                return 0.7;
+            }
+        }
+        if (userRole == UserLevel.PoliceOfficer && resourceSensitivity == ResourceSensitivity.Restricted) {
+            return 0.4;
+        }
+        return 0.0;
+    }
+    private double getContextualRisk(Long userId, Long currentOfficeId){
+        if(getSensitiveTimePeriod(userId) && getOfficeSite(userId, currentOfficeId)){
+            return 0.2;
+        } else if(!getSensitiveTimePeriod(userId) && getOfficeSite(userId, currentOfficeId)){
+            return 0.4;
+        } else {
+            return 0.7;
+        }
+    }
+
+    private double getOperationRisk(OperationType operationType){
+        return switch (operationType) {
+            case Read -> 0.2;
+            case Write -> 0.4;
+            case Delete -> 0.7;
+        };
+    }
+    private boolean getSensitiveTimePeriod(Long userId){
+        LocalTime currentTime = LocalTime.now();
+        if(pip.getStartTimeByUserID(userId)!=null && pip.getEndTimeByUserID(userId)!=null){
+            return currentTime.isAfter(pip.getStartTimeByUserId(userId)) && currentTime.isBefore(pip.getEndTimeByUserId(userId));
+        }
+        return false;
+    }
+
+    private boolean getOfficeSite(Long userId, Long currentOfficeId){
+        return pip.getOfficeNameByUserID(userId).equals(pip.getOfficeNameById(currentOfficeId));
     }
 }
