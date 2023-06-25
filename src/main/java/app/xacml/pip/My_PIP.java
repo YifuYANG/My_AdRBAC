@@ -55,6 +55,13 @@ public class My_PIP {
         return officeRepository.findByOfficeId(officeId).getOfficeName();
     }
 
+    public Long getOfficeIdByOfficeNameAndUserId(String officeName, Long userId){
+        return officeRepository.findOfficeByOfficeNameAndUserId(officeName,userId).getOfficeId();
+    }
+
+    public OfficeType getOfficeTypeByOfficeID(Long officeId){
+        return officeRepository.findAllOfficesByOfficeId(officeId).get(0).getOfficeType();
+    }
     public LocalTime getStartTimeByUserId(Long userId){
         return timeTableRepository.findByUserId(userId).getStartTime();
     }

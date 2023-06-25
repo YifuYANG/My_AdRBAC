@@ -31,7 +31,6 @@ public class MyRiskEngine {
         System.out.println("operation risk: "+getOperationRisk(operationType)* operationWeightage);
         System.out.println("contextual risk: "+getContextualRisk(userId,currentOfficeId)* contextualWeightage);
         System.out.println("user history risk: "+getUserHistoryRisk(userId));
-
         System.out.print("New Risk is: ");
         System.out.println(
                 (getAccessRisk(userId,recordId) * accessWeightage)+
@@ -125,10 +124,10 @@ public class MyRiskEngine {
     }
 
     private boolean isInSameOfficeSite(Long userId, Long currentOfficeId){
-        return pip.getOfficeNameByUserID(userId).equals(pip.getOfficeNameById(currentOfficeId));
+        return pip.getOfficeIdByOfficeNameAndUserId(pip.getOfficeNameByUserID(userId),userId).equals(currentOfficeId);
     }
 
     private boolean isInSameOfficeType(Long userId, Long currentOfficeId){
-        return pip.getOfficeTypeById(currentOfficeId) == pip.getOfficeTypeByUserID(userId);
+        return pip.getOfficeTypeByOfficeID(currentOfficeId) == pip.getOfficeTypeByUserID(userId);
     }
 }

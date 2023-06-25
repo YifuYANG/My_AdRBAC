@@ -16,8 +16,9 @@ import javax.validation.constraints.NotBlank;
 public class Office {
     @Id
     @GeneratedValue
-    private Long officeId;
+    private Long officeRecordId;
     @NotBlank
+    private Long officeId;
     private Long userId;
     private String officeName;
     private OfficeType officeType;

@@ -82,7 +82,7 @@ public class My_PEP {
             if(!pdp.XACML_response(userId,officeId,operationType,resourceType.toString(),recordId)){
                 log.warn("Insufficient authorisation detected: User [" + pepDao.findUserByUserId(userId).getUserLevel()+"] "+
                         pepDao.findUserByUserId(userId).getLast_name()+ " " +pepDao.findUserByUserId(userId).getFirst_name() +
-                        " at "+pepDao.findOfficeByOfficeId(officeId).getOfficeName());
+                        " at "+pepDao.findOfficeByOfficeId(officeId).get(0).getOfficeType());
                 throw new CustomErrorException("Risk level too high, access deny.");
             }
             log.info("Token approved to execute " + method.getName());

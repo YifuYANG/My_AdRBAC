@@ -2,6 +2,7 @@ package app.dao;
 
 
 import app.bean.TokenPool;
+import app.constant.OfficeType;
 import app.model.Office;
 import app.model.User;
 import app.repository.OfficeRepository;
@@ -10,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Service
 public class PEPDao {
@@ -29,8 +31,8 @@ public class PEPDao {
         return userRepository.findByUserId(userId);
     }
 
-    public Office findOfficeByOfficeId(Long officeId){
-        return officeRepository.findByOfficeId(officeId);
+    public List<Office> findOfficeByOfficeId(Long officeId){
+        return officeRepository.findAllOfficesByOfficeId(officeId);
     }
 
     public Boolean containsToken(String token){

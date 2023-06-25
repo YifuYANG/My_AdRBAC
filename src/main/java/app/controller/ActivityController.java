@@ -40,7 +40,7 @@ public class ActivityController {
             User user = activityDao.getUserByUserId(activityDao.getUserIdByToken(token));
             log.info("User => "+user.getLast_name() +" "+user.getFirst_name() +" [" + user.getUserLevel() +"]"
                     + " Performed Read Operation to [" + activityDao.getMedicalRecordById(id).getPatient_last_name()
-                    +"]'s Medical Record at => ["+ activityDao.getOfficeById(officeId).getOfficeName()+"].");
+                    +"]'s Medical Record at => ["+ activityDao.getOfficeById(officeId).get(0).getOfficeType()+"].");
             Map<String,MedicalRecord> map=new HashMap<>();
             map.put("medical record",activityDao.getMedicalRecordById(id));
             return new ResponseEntity<>(map,HttpStatus.ACCEPTED);
@@ -60,7 +60,7 @@ public class ActivityController {
             User user = activityDao.getUserByUserId(activityDao.getUserIdByToken(token));
             log.info("User => "+user.getLast_name() +" "+user.getFirst_name() +" [" + user.getUserLevel() +"]"
                     + " Performed Write Operation to ["+activityDao.getMedicalRecordById(medicalRecordForm.getRecordId()).getPatient_last_name()
-                    +"]'s Medical Record at => ["+ activityDao.getOfficeById(officeId).getOfficeName()+"].");
+                    +"]'s Medical Record at => ["+ activityDao.getOfficeById(officeId).get(0).getOfficeType()+"].");
             Map<String,String> map=new HashMap<>();
             map.put("msg","Write Operation Performed to Medical Record");
             return new ResponseEntity<>(map,HttpStatus.ACCEPTED);
@@ -80,7 +80,7 @@ public class ActivityController {
             User user = activityDao.getUserByUserId(activityDao.getUserIdByToken(token));
             log.info("User => "+user.getLast_name() +" "+user.getFirst_name() +" [" + user.getUserLevel() +"]"
                     + " Performed Delete Operation to Medical Record at => ["
-                    + activityDao.getOfficeById(officeId).getOfficeName()+"].");
+                    + activityDao.getOfficeById(officeId).get(0).getOfficeType()+"].");
             Map<String,String> map=new HashMap<>();
             map.put("msg","Delete Operation Performed to Medical Record");
             return new ResponseEntity<>(map,HttpStatus.ACCEPTED);

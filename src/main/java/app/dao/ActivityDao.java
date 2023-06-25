@@ -11,6 +11,8 @@ import app.vo.MedicalRecordForm;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 public class ActivityDao {
     private final TokenPool tokenPool;
@@ -38,15 +40,14 @@ public class ActivityDao {
         return medicalRecordRepository.findRecordById(id);
     }
 
-    public Office getOfficeById(Long officeId){
-        return officeRepository.findByOfficeId(officeId);
+    public List<Office> getOfficeById(Long officeId){
+        return officeRepository.findAllOfficesByOfficeId(officeId);
     }
     public void updateRecord(MedicalRecordForm medicalRecordForm){
         MedicalRecord updateRecord=medicalRecordRepository.findRecordById(medicalRecordForm.getRecordId());
         updateRecord.setDescription(medicalRecordForm.getDescription());
         medicalRecordRepository.save(updateRecord);
     }
-
     public void deleteByRecordId(Long recordId){
         medicalRecordRepository.deleteById(recordId);
     }
