@@ -46,9 +46,9 @@ public class My_PDP{
             AttributeBag<?> subjectIdAttributeValues = Bags.singletonAttributeBag(StandardDatatypes.STRING, new StringValue(pip.getUserRole(userId).toString()));
             requestBuilder.putNamedAttributeIfAbsent(subjectIdAttributeId, subjectIdAttributeValues);
 
-            AttributeFqn environmentIdAttributeId = AttributeFqns.newInstance(XACML_3_0_ENVIRONMENT.value(), Optional.empty(), "urn:oasis:names:tc:xacml:1.0:environment:environment-id");
-            AttributeBag<?> environmentIdAttributeValues = Bags.singletonAttributeBag(StandardDatatypes.STRING, new StringValue(pip.getOfficeTypeById(officeId).toString()));
-            requestBuilder.putNamedAttributeIfAbsent(environmentIdAttributeId, environmentIdAttributeValues);
+//            AttributeFqn environmentIdAttributeId = AttributeFqns.newInstance(XACML_3_0_ENVIRONMENT.value(), Optional.empty(), "urn:oasis:names:tc:xacml:1.0:environment:environment-id");
+//            AttributeBag<?> environmentIdAttributeValues = Bags.singletonAttributeBag(StandardDatatypes.STRING, new StringValue(pip.getOfficeTypeById(officeId).toString()));
+//            requestBuilder.putNamedAttributeIfAbsent(environmentIdAttributeId, environmentIdAttributeValues);
 
             AttributeFqn actionIdAttributeId = AttributeFqns.newInstance(XACML_3_0_ACTION.value(), Optional.empty(), XacmlAttributeId.XACML_1_0_ACTION_ID.value());
             AttributeBag<?> actionIdAttributeValues = Bags.singletonAttributeBag(StandardDatatypes.STRING, new StringValue(action.toString()));
@@ -80,9 +80,11 @@ public class My_PDP{
     private RiskLevel getRiskLevel(Long userId, Long recordId,
                                    Long currentOfficeId,OperationType operationType){
         double risk = myRiskEngine.evaluateRiskReturnRiskScore(userId, recordId, currentOfficeId,operationType);
-        return (risk <= 0.3) ? RiskLevel.Low :
-               (risk <= 0.5) ? RiskLevel.Medium :
-                               RiskLevel.High;
+        return (risk <= 0.2) ? RiskLevel.Negligible :
+               (risk <= 0.4) ? RiskLevel.Low :
+               (risk <= 0.6) ? RiskLevel.Medium :
+               (risk <= 0.8) ? RiskLevel.High :
+                               RiskLevel.Extreme;
     }
 
 }

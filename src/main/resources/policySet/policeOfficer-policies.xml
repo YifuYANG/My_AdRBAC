@@ -171,6 +171,16 @@
                                                      Category="urn:oasis:names:tc:xacml:3.0:attribute-category:environment"
                                                      MustBePresent="true"/>
                             </Apply>
+                            <AttributeValue DataType="http://www.w3.org/2001/XMLSchema#string">Negligible</AttributeValue>
+                        </Apply>
+
+                        <Apply FunctionId="urn:oasis:names:tc:xacml:1.0:function:string-equal">
+                            <Apply FunctionId="urn:oasis:names:tc:xacml:1.0:function:string-one-and-only">
+                                <AttributeDesignator AttributeId="xacml:risk-level"
+                                                     DataType="http://www.w3.org/2001/XMLSchema#string"
+                                                     Category="urn:oasis:names:tc:xacml:3.0:attribute-category:environment"
+                                                     MustBePresent="true"/>
+                            </Apply>
                             <AttributeValue DataType="http://www.w3.org/2001/XMLSchema#string">Low</AttributeValue>
                         </Apply>
 
@@ -199,7 +209,7 @@
         </Rule>
 
         <Rule RuleId="PoliceOfficer_read_rule_2" Effect="Permit">
-            <Description>PoliceOfficer with privilege can read the Confidential patient's record at any location when the risk level is low or medium</Description>
+            <Description>PoliceOfficer with privilege can read the Confidential patient's record at any location when the risk level is Negligible, low or medium</Description>
             <Condition>
                 <Apply FunctionId="urn:oasis:names:tc:xacml:1.0:function:and">
                     <Apply FunctionId="urn:oasis:names:tc:xacml:1.0:function:string-equal">
@@ -253,6 +263,16 @@
                                                      Category="urn:oasis:names:tc:xacml:3.0:attribute-category:environment"
                                                      MustBePresent="true"/>
                             </Apply>
+                            <AttributeValue DataType="http://www.w3.org/2001/XMLSchema#string">Negligible</AttributeValue>
+                        </Apply>
+
+                        <Apply FunctionId="urn:oasis:names:tc:xacml:1.0:function:string-equal">
+                            <Apply FunctionId="urn:oasis:names:tc:xacml:1.0:function:string-one-and-only">
+                                <AttributeDesignator AttributeId="xacml:risk-level"
+                                                     DataType="http://www.w3.org/2001/XMLSchema#string"
+                                                     Category="urn:oasis:names:tc:xacml:3.0:attribute-category:environment"
+                                                     MustBePresent="true"/>
+                            </Apply>
                             <AttributeValue DataType="http://www.w3.org/2001/XMLSchema#string">Low</AttributeValue>
                         </Apply>
 
@@ -271,7 +291,7 @@
         </Rule>
 
         <Rule RuleId="PoliceOfficer_read_rule_3" Effect="Permit">
-            <Description>PoliceOfficer with privilege can read the Restricted patient's record when the risk level is low</Description>
+            <Description>PoliceOfficer with privilege can read the Restricted patient's record when the risk level is Negligible or low</Description>
 
             <Condition>
                 <Apply FunctionId="urn:oasis:names:tc:xacml:1.0:function:and">
@@ -305,14 +325,26 @@
                         <AttributeValue DataType="http://www.w3.org/2001/XMLSchema#string">Premium</AttributeValue>
                     </Apply>
 
-                    <Apply FunctionId="urn:oasis:names:tc:xacml:1.0:function:string-equal">
-                        <Apply FunctionId="urn:oasis:names:tc:xacml:1.0:function:string-one-and-only">
-                            <AttributeDesignator AttributeId="xacml:risk-level"
-                                                 DataType="http://www.w3.org/2001/XMLSchema#string"
-                                                 Category="urn:oasis:names:tc:xacml:3.0:attribute-category:environment"
-                                                 MustBePresent="true"/>
+                    <Apply FunctionId="urn:oasis:names:tc:xacml:1.0:function:or">
+                        <Apply FunctionId="urn:oasis:names:tc:xacml:1.0:function:string-equal">
+                            <Apply FunctionId="urn:oasis:names:tc:xacml:1.0:function:string-one-and-only">
+                                <AttributeDesignator AttributeId="xacml:risk-level"
+                                                     DataType="http://www.w3.org/2001/XMLSchema#string"
+                                                     Category="urn:oasis:names:tc:xacml:3.0:attribute-category:environment"
+                                                     MustBePresent="true"/>
+                            </Apply>
+                            <AttributeValue DataType="http://www.w3.org/2001/XMLSchema#string">Negligible</AttributeValue>
                         </Apply>
-                        <AttributeValue DataType="http://www.w3.org/2001/XMLSchema#string">Low</AttributeValue>
+
+                        <Apply FunctionId="urn:oasis:names:tc:xacml:1.0:function:string-equal">
+                            <Apply FunctionId="urn:oasis:names:tc:xacml:1.0:function:string-one-and-only">
+                                <AttributeDesignator AttributeId="xacml:risk-level"
+                                                     DataType="http://www.w3.org/2001/XMLSchema#string"
+                                                     Category="urn:oasis:names:tc:xacml:3.0:attribute-category:environment"
+                                                     MustBePresent="true"/>
+                            </Apply>
+                            <AttributeValue DataType="http://www.w3.org/2001/XMLSchema#string">Low</AttributeValue>
+                        </Apply>
                     </Apply>
                 </Apply>
             </Condition>

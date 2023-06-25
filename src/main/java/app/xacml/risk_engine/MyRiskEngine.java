@@ -1,6 +1,4 @@
 package app.xacml.risk_engine;
-
-
 import app.constant.OperationType;
 import app.constant.ResourceSensitivity;
 import app.constant.UserLevel;
@@ -24,31 +22,27 @@ public class MyRiskEngine {
 
     public double evaluateRiskReturnRiskScore(Long userId, Long recordId,
                                               Long currentOfficeId,OperationType operationType){
-        final double officeSiteWeightage = 0.3;
-        final double sensitiveTimePeriodWeightage = 0.3;
 
-        final double operationWeightage = 0.1;
-        final double userHistoryWeightage = 0.1;
+        final double operationWeightage = 0.2;
         final double accessWeightage = 0.4;
         final double contextualWeightage = 0.4;
 
         System.out.println("access risk: "+getAccessRisk(userId,recordId)* accessWeightage);
         System.out.println("operation risk: "+getOperationRisk(operationType)* operationWeightage);
         System.out.println("contextual risk: "+getContextualRisk(userId,currentOfficeId)* contextualWeightage);
-        System.out.println("user history risk: "+getUserHistoryRisk(userId)* userHistoryWeightage);
+        System.out.println("user history risk: "+getUserHistoryRisk(userId));
 
         System.out.print("New Risk is: ");
         System.out.println(
                 (getAccessRisk(userId,recordId) * accessWeightage)+
                 (getOperationRisk(operationType) * operationWeightage)+
                 (getContextualRisk(userId,currentOfficeId) * contextualWeightage)+
-                (getUserHistoryRisk(userId) * userHistoryWeightage));
+                getUserHistoryRisk(userId));
 
-        double Risk = (getUserHistoryRisk(userId) * userHistoryWeightage) +
-                (getSensitiveTimePeriodRisk(userId) * sensitiveTimePeriodWeightage) +
-                (getOfficeSiteRisk(userId,currentOfficeId) * officeSiteWeightage);
-
-        return Risk;
+        return (getAccessRisk(userId,recordId) * accessWeightage)+
+                (getOperationRisk(operationType) * operationWeightage)+
+                (getContextualRisk(userId,currentOfficeId) * contextualWeightage)+
+                getUserHistoryRisk(userId);
     }
 
     private double getUserHistoryRisk(Long userId){
@@ -64,42 +58,23 @@ public class MyRiskEngine {
         return risk;
     }
 
-    private double getOfficeSiteRisk(Long userId, Long currentOfficeId){
-        double risk = 0.0;
-        if(!pip.getOfficeNameByUserID(userId).equals(pip.getOfficeNameById(currentOfficeId))){
-            risk = 0.8;
-        }
-        return risk;
-    }
-
-    private double getSensitiveTimePeriodRisk(Long userId){
-        double risk = 0.8;
-        LocalTime currentTime = LocalTime.now();
-        if(pip.getStartTimeByUserID(userId)!=null && pip.getEndTimeByUserID(userId)!=null){
-            if (currentTime.isAfter(pip.getStartTimeByUserId(userId)) && currentTime.isBefore(pip.getEndTimeByUserId(userId))){
-                risk = 0.0;
-            }
-        }
-        return risk;
-    }
-
     private double getAccessRisk(Long userId, Long recordId){
         UserLevel userRole = pip.getUserRole(userId);
         ResourceSensitivity resourceSensitivity = pip.getResourceSensitivityByRecordId(recordId);
         if (userRole == UserLevel.Nurse) {
             if (resourceSensitivity == ResourceSensitivity.Confidential) {
-                return 0.6;
+                return 0.4;
             }
             if (resourceSensitivity == ResourceSensitivity.Restricted) {
-                return 0.8;
+                return 0.7;
             }
         }
         if (userRole == UserLevel.Doctor) {
             if (resourceSensitivity == ResourceSensitivity.Confidential) {
-                return 0.4;
+                return 0.2;
             }
             if (resourceSensitivity == ResourceSensitivity.Restricted) {
-                return 0.6;
+                return 0.7;
             }
         }
         if (userRole == UserLevel.SocialWorker) {

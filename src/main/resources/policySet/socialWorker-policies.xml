@@ -106,7 +106,7 @@
             </AnyOf>
         </Target>
         <Rule RuleId="SocialWorker_read_rule_1" Effect="Permit">
-            <Description>Social Worker with privilege can read the Internal patient's record when risk level is low or medium</Description>
+            <Description>Social Worker with privilege can read the Internal patient's record when risk level is Negligible, low or medium</Description>
             <Condition>
                 <Apply FunctionId="urn:oasis:names:tc:xacml:1.0:function:and">
                     <Apply FunctionId="urn:oasis:names:tc:xacml:1.0:function:string-equal">
@@ -163,6 +163,16 @@
                     </Apply>
 
                     <Apply FunctionId="urn:oasis:names:tc:xacml:1.0:function:or">
+                        <Apply FunctionId="urn:oasis:names:tc:xacml:1.0:function:string-equal">
+                            <Apply FunctionId="urn:oasis:names:tc:xacml:1.0:function:string-one-and-only">
+                                <AttributeDesignator AttributeId="xacml:risk-level"
+                                                     DataType="http://www.w3.org/2001/XMLSchema#string"
+                                                     Category="urn:oasis:names:tc:xacml:3.0:attribute-category:environment"
+                                                     MustBePresent="true"/>
+                            </Apply>
+                            <AttributeValue DataType="http://www.w3.org/2001/XMLSchema#string">Negligible</AttributeValue>
+                        </Apply>
+
                         <Apply FunctionId="urn:oasis:names:tc:xacml:1.0:function:string-equal">
                             <Apply FunctionId="urn:oasis:names:tc:xacml:1.0:function:string-one-and-only">
                                 <AttributeDesignator AttributeId="xacml:risk-level"

@@ -37,7 +37,7 @@
             </AnyOf>
         </Target>
         <Rule RuleId="admin_delete_rule_1" Effect="Permit">
-            <Description>admin can delete the patient's record at anytime and locations when risk is low</Description>
+            <Description>admin can delete the patient's record at anytime and locations when risk is negligible</Description>
             <Condition>
                 <Apply FunctionId="urn:oasis:names:tc:xacml:1.0:function:and">
                     <Apply FunctionId="urn:oasis:names:tc:xacml:1.0:function:string-equal">
@@ -57,7 +57,7 @@
                                                  Category="urn:oasis:names:tc:xacml:3.0:attribute-category:environment"
                                                  MustBePresent="true"/>
                         </Apply>
-                        <AttributeValue DataType="http://www.w3.org/2001/XMLSchema#string">Low</AttributeValue>
+                        <AttributeValue DataType="http://www.w3.org/2001/XMLSchema#string">Negligible</AttributeValue>
                     </Apply>
                 </Apply>
             </Condition>
@@ -84,7 +84,7 @@
             </AnyOf>
         </Target>
         <Rule RuleId="admin_write_rule_1" Effect="Permit">
-            <Description>admin can write the patient's record at anytime and locations when risk level is low or medium</Description>
+            <Description>admin can write the patient's record at anytime and locations when risk level is negligible, low or medium</Description>
             <Condition>
                 <Apply FunctionId="urn:oasis:names:tc:xacml:1.0:function:and">
                     <Apply FunctionId="urn:oasis:names:tc:xacml:1.0:function:string-equal">
@@ -97,6 +97,16 @@
                         <AttributeValue DataType="http://www.w3.org/2001/XMLSchema#string">MedicalRecord</AttributeValue>
                     </Apply>
                     <Apply FunctionId="urn:oasis:names:tc:xacml:1.0:function:or">
+                        <Apply FunctionId="urn:oasis:names:tc:xacml:1.0:function:string-equal">
+                            <Apply FunctionId="urn:oasis:names:tc:xacml:1.0:function:string-one-and-only">
+                                <AttributeDesignator AttributeId="xacml:risk-level"
+                                                     DataType="http://www.w3.org/2001/XMLSchema#string"
+                                                     Category="urn:oasis:names:tc:xacml:3.0:attribute-category:environment"
+                                                     MustBePresent="true"/>
+                            </Apply>
+                            <AttributeValue DataType="http://www.w3.org/2001/XMLSchema#string">Negligible</AttributeValue>
+                        </Apply>
+
                         <Apply FunctionId="urn:oasis:names:tc:xacml:1.0:function:string-equal">
                             <Apply FunctionId="urn:oasis:names:tc:xacml:1.0:function:string-one-and-only">
                                 <AttributeDesignator AttributeId="xacml:risk-level"
@@ -142,7 +152,7 @@
         </Target>
 
         <Rule RuleId="admin_read_rule_1" Effect="Permit">
-            <Description>admin can read the patient's record at anytime and locations when risk is low or medium</Description>
+            <Description>admin can read the patient's record at anytime and locations when risk is negligible, low or medium</Description>
             <Condition>
                 <Apply FunctionId="urn:oasis:names:tc:xacml:1.0:function:and">
                     <Apply FunctionId="urn:oasis:names:tc:xacml:1.0:function:string-equal">
@@ -155,6 +165,16 @@
                         <AttributeValue DataType="http://www.w3.org/2001/XMLSchema#string">MedicalRecord</AttributeValue>
                     </Apply>
                     <Apply FunctionId="urn:oasis:names:tc:xacml:1.0:function:or">
+                        <Apply FunctionId="urn:oasis:names:tc:xacml:1.0:function:string-equal">
+                            <Apply FunctionId="urn:oasis:names:tc:xacml:1.0:function:string-one-and-only">
+                                <AttributeDesignator AttributeId="xacml:risk-level"
+                                                     DataType="http://www.w3.org/2001/XMLSchema#string"
+                                                     Category="urn:oasis:names:tc:xacml:3.0:attribute-category:environment"
+                                                     MustBePresent="true"/>
+                            </Apply>
+                            <AttributeValue DataType="http://www.w3.org/2001/XMLSchema#string">Negligible</AttributeValue>
+                        </Apply>
+
                         <Apply FunctionId="urn:oasis:names:tc:xacml:1.0:function:string-equal">
                             <Apply FunctionId="urn:oasis:names:tc:xacml:1.0:function:string-one-and-only">
                                 <AttributeDesignator AttributeId="xacml:risk-level"
