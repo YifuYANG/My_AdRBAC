@@ -22,7 +22,10 @@ import java.util.Map;
 @Controller
 @Slf4j
 public class ActivityController {
-
+    public static final String ANSI_GREEN = "\u001B[32m";
+    public static final String ANSI_RED = "\u001B[31m";
+    public static final String ANSI_RESET = "\u001B[0m";
+    public static final String ANSI_YELLOW = "\u001B[33m";
     private final ActivityDao activityDao;
     @Autowired
     public ActivityController(ActivityDao activityDao) {
@@ -38,9 +41,9 @@ public class ActivityController {
                                                                 @PathVariable("id") Long id) throws CustomErrorException {
         try {
             User user = activityDao.getUserByUserId(activityDao.getUserIdByToken(token));
-            log.info("User => "+user.getLast_name() +" "+user.getFirst_name() +" [" + user.getUserLevel() +"]"
-                    + " Performed Read Operation to [" + activityDao.getMedicalRecordById(id).getPatient_last_name()
-                    +"]'s Medical Record at => ["+ activityDao.getOfficeById(officeId).get(0).getOfficeType()+"].");
+            log.info(user.getLast_name() +" "+user.getFirst_name()
+                    + " Performed Read Operation to " + activityDao.getMedicalRecordById(id).getPatient_last_name()
+                    +"'s Medical Record at "+ activityDao.getOfficeById(officeId).get(0).getOfficeType()+".");
             Map<String,MedicalRecord> map=new HashMap<>();
             map.put("medical record",activityDao.getMedicalRecordById(id));
             return new ResponseEntity<>(map,HttpStatus.ACCEPTED);
@@ -58,9 +61,9 @@ public class ActivityController {
         try {
             activityDao.updateRecord(medicalRecordForm);
             User user = activityDao.getUserByUserId(activityDao.getUserIdByToken(token));
-            log.info("User => "+user.getLast_name() +" "+user.getFirst_name() +" [" + user.getUserLevel() +"]"
-                    + " Performed Write Operation to ["+activityDao.getMedicalRecordById(medicalRecordForm.getRecordId()).getPatient_last_name()
-                    +"]'s Medical Record at => ["+ activityDao.getOfficeById(officeId).get(0).getOfficeType()+"].");
+            log.info(ANSI_GREEN + user.getLast_name() +" "+user.getFirst_name() + ANSI_RESET
+                    + " Performed" + ANSI_YELLOW +" Write " +ANSI_RESET + "Operation to "+ ANSI_GREEN + activityDao.getMedicalRecordById(medicalRecordForm.getRecordId()).getPatient_last_name()
+                    +"'s Medical Record" + ANSI_RESET +" at "+ ANSI_GREEN + activityDao.getOfficeById(officeId).get(0).getOfficeName()+ANSI_RESET);
             Map<String,String> map=new HashMap<>();
             map.put("msg","Write Operation Performed to Medical Record");
             return new ResponseEntity<>(map,HttpStatus.ACCEPTED);

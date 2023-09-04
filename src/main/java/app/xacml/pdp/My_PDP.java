@@ -5,6 +5,7 @@ import app.constant.RiskLevel;
 import app.exception.CustomErrorException;
 import app.xacml.pip.My_PIP;
 import app.xacml.risk_engine.MyRiskEngine;
+import lombok.extern.slf4j.Slf4j;
 import oasis.names.tc.xacml._3_0.core.schema.wd_17.DecisionType;
 import org.ow2.authzforce.core.pdp.api.*;
 import org.ow2.authzforce.core.pdp.api.value.AttributeBag;
@@ -23,11 +24,14 @@ import java.io.IOException;
 import java.util.Optional;
 
 import static org.ow2.authzforce.xacml.identifiers.XacmlAttributeCategory.*;
-
+@Slf4j
 @Component
 @Scope(ConfigurableBeanFactory.SCOPE_SINGLETON)
 public class My_PDP{
-
+    public static final String ANSI_GREEN = "\u001B[32m";
+    public static final String ANSI_RED = "\u001B[31m";
+    public static final String ANSI_RESET = "\u001B[0m";
+    public static final String ANSI_YELLOW = "\u001B[33m";
     private final My_PIP pip;
     private final MyRiskEngine myRiskEngine;
     @Autowired
@@ -35,7 +39,7 @@ public class My_PDP{
         this.pip = pip;
         this.myRiskEngine = myRiskEngine;
     }
-    private final PdpEngineConfiguration pdpEngineConf = PdpEngineConfiguration.getInstance("src/main/resources/PDP.xml");;
+    private final PdpEngineConfiguration pdpEngineConf = PdpEngineConfiguration.getInstance("src/main/resources/PDP.xml");
 
 
     public boolean XACML_response(Long userId, Long officeId, OperationType action, String resource, Long recordId) throws CustomErrorException {
@@ -76,6 +80,18 @@ public class My_PDP{
     private RiskLevel getRiskLevel(Long userId, Long recordId,
                                    Long currentOfficeId,OperationType operationType){
         double risk = myRiskEngine.evaluateRiskReturnRiskScore(userId, recordId, currentOfficeId,operationType);
+        if (risk <= 0.2){
+            log.warn(ANSI_GREEN + RiskLevel.Negligible + " Risk Detected" + ANSI_RESET);
+        } else if (risk <= 0.4) {
+            log.warn(ANSI_GREEN + RiskLevel.Low + " Risk Detected" + ANSI_RESET);
+        } else if (risk <= 0.6) {
+            log.warn(ANSI_YELLOW + RiskLevel.Medium + " Risk Detected" + ANSI_RESET);
+        } else if (risk <= 0.8) {
+            log.warn(ANSI_RED + RiskLevel.High + " Risk Detected" + ANSI_RESET);
+        } else {
+            log.warn(ANSI_RED + RiskLevel.Extreme + " Risk Detected" + ANSI_RESET);
+        }
+
         return (risk <= 0.2) ? RiskLevel.Negligible :
                (risk <= 0.4) ? RiskLevel.Low :
                (risk <= 0.6) ? RiskLevel.Medium :

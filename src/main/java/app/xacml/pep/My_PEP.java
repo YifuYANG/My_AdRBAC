@@ -2,13 +2,11 @@ package app.xacml.pep;
 
 import app.constant.OperationType;
 import app.constant.ResourceType;
-import app.constant.RiskLevel;
 import app.constant.UserLevel;
 import app.dao.PEPDao;
 import app.exception.CustomErrorException;
 import app.vo.MedicalRecordForm;
 import app.xacml.pdp.My_PDP;
-import app.xacml.risk_engine.MyRiskEngine;
 import lombok.extern.slf4j.Slf4j;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
@@ -24,7 +22,9 @@ import java.lang.reflect.Method;
 @Aspect
 @Component
 public class My_PEP {
-
+    public static final String ANSI_RED = "\u001B[31m";
+    public static final String ANSI_RESET = "\u001B[0m";
+    public static final String ANSI_YELLOW = "\u001B[33m";
     private final PEPDao pepDao;
     private final My_PDP pdp;
     @Autowired
@@ -73,17 +73,17 @@ public class My_PEP {
                 log.warn("Expired token detected -> " + token);
                 throw new CustomErrorException("Access denied, your token has been expired, please re-login.");
             }
-            // Check if the user has the required authorization level
+            // Check if the user has the required authorization level -> Role Based Control
             if (requiredLevel != UserLevel.Any && pepDao.findUserByUserId(userId).getUserLevel() != requiredLevel) {
                 log.warn("Insufficient authorisation detected -> " + token);
                 throw new CustomErrorException("Access denied, you have no privileges to access this content.");
             }
-            // Check pdp and receives decision
+            // Check pdp and receives decision -> ABAC risk aware
             if(!pdp.XACML_response(userId,officeId,operationType,resourceType.toString(),recordId)){
-                log.warn("Insufficient authorisation detected: User [" + pepDao.findUserByUserId(userId).getUserLevel()+"] "+
-                        pepDao.findUserByUserId(userId).getLast_name()+ " " +pepDao.findUserByUserId(userId).getFirst_name() +
-                        " at "+pepDao.findOfficeByOfficeId(officeId).get(0).getOfficeType());
-                throw new CustomErrorException("Risk level too high, access deny.");
+                log.warn("Insufficient authorisation detected: " +ANSI_RED+
+                        pepDao.findUserByUserId(userId).getLast_name()+ " " +pepDao.findUserByUserId(userId).getFirst_name() + ANSI_RESET +
+                        " at " +ANSI_YELLOW +pepDao.findOfficeByOfficeId(officeId).get(0).getOfficeName()+ANSI_RESET);
+                throw new CustomErrorException("Access deny.");
             }
             log.info("Token approved to execute " + method.getName());
             return joinPoint.proceed();

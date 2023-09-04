@@ -23,7 +23,9 @@ import java.util.regex.Pattern;
 @Controller
 @Slf4j
 public class LoginController {
-
+    public static final String ANSI_GREEN = "\u001B[32m";
+    public static final String ANSI_RESET = "\u001B[0m";
+    public static final String ANSI_YELLOW = "\u001B[33m";
     private final LoginDao loginDao;
 
     @Autowired
@@ -53,7 +55,8 @@ public class LoginController {
                 } else {
                     String token = loginDao.generateToken();
                     loginDao.loginUser(user.getUserId(),token);
-                    log.info("Token issued to " + user.getLast_name()+" "+user.getFirst_name());
+                    log.info(ANSI_GREEN+"Incoming Login Success"+ANSI_RESET);
+                    log.info("Token issued to " + "'"+ANSI_YELLOW + user.getLast_name()+" "+user.getFirst_name() + ANSI_RESET +"'");
                     map.put("status", "success");
                     map.put("token", token);
                     map.put("role", loginDao.getUserRoleByToken(token).name());

@@ -100,4 +100,8 @@ public class My_PIP {
         Optional<Office> officeOptional = officeRepository.findByUserID(userId);
         return officeOptional.map(Office::getOfficeType).orElse(null);
     }
+
+    public String getUserNameByUserId(long userid){
+        return userRepository.findByUserId(userid).getFirst_name() + userRepository.findByUserId(userid).getFirst_name();
+    }
 }

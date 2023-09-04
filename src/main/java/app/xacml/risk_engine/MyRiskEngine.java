@@ -26,18 +26,6 @@ public class MyRiskEngine {
         final double operationWeightage = 0.2;
         final double accessWeightage = 0.4;
         final double contextualWeightage = 0.4;
-
-        System.out.println("access risk: "+getAccessRisk(userId,recordId)* accessWeightage);
-        System.out.println("operation risk: "+getOperationRisk(operationType)* operationWeightage);
-        System.out.println("contextual risk: "+getContextualRisk(userId,currentOfficeId)* contextualWeightage);
-        System.out.println("user history risk: "+getUserHistoryRisk(userId));
-        System.out.print("New Risk is: ");
-        System.out.println(
-                (getAccessRisk(userId,recordId) * accessWeightage)+
-                (getOperationRisk(operationType) * operationWeightage)+
-                (getContextualRisk(userId,currentOfficeId) * contextualWeightage)+
-                getUserHistoryRisk(userId));
-
         return (getAccessRisk(userId,recordId) * accessWeightage)+
                 (getOperationRisk(operationType) * operationWeightage)+
                 (getContextualRisk(userId,currentOfficeId) * contextualWeightage)+
