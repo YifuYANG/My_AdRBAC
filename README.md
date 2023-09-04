@@ -11,10 +11,10 @@ This is the actual implementation of the proposed model in my dissertation.
 
 
 ## XACML Core Elements
-- [X] [Policy Enforcement Point](../src/main/java/app/xacml/pep/My_PEP.java)
-- [X] [Policy Information Point](../src/main/java/app/xacml/pip/My_PIP.java)
-- [X] [Risk Engine](../src/main/java/app/xacml/risk_engine/MyRiskEngine.java)
-- [X] [Policy Decision Point](../src/main/java/app/xacml/pdp/My_PDP.java)
-- [X] [XACML Policy Sets](../src/main/resources/policySet)
+- [X] [Policy Enforcement Point](https://github.com/YifuYANG/My_AdRBAC/blob/master/src/main/java/app/xacml/pep/My_PEP.java)
+- [X] [Policy Information Point](https://github.com/YifuYANG/My_AdRBAC/blob/master/src/main/java/app/xacml/pip/My_PIP.java)
+- [X] [Risk Engine](https://github.com/YifuYANG/My_AdRBAC/blob/master/src/main/java/app/xacml/risk_engine/MyRiskEngine.java)
+- [X] [Policy Decision Point](https://github.com/YifuYANG/My_AdRBAC/blob/master/src/main/java/app/xacml/pdp/My_PDP.java)
+- [X] [XACML Policy Sets](https://github.com/YifuYANG/My_AdRBAC/tree/master/src/main/resources/policySet)
 
-## A detailed walk through can be found [Here](../src/Application Walk Through.mp4)
+## A detailed walk through can be found [Here](https://github.com/YifuYANG/My_AdRBAC/blob/master/Application%20Walk%20Through.mp4)
