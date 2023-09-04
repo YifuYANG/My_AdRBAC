@@ -17,4 +17,4 @@ This is the actual implementation of the proposed model in my dissertation.
 - [X] [Policy Decision Point](https://github.com/YifuYANG/My_AdRBAC/blob/master/src/main/java/app/xacml/pdp/My_PDP.java)
 - [X] [XACML Policy Sets](https://github.com/YifuYANG/My_AdRBAC/tree/master/src/main/resources/policySet)
 
-## A detailed walk through can be found [Here](https://github.com/YifuYANG/My_AdRBAC/blob/master/Application%20Walk%20Through.mp4)
+## A detailed walk through video can be found [Here](https://github.com/YifuYANG/My_AdRBAC/blob/master/Application%20Walk%20Through.mp4)
