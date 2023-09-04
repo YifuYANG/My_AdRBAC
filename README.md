@@ -11,10 +11,10 @@ This is the actual implementation of the proposed model in my dissertation.
 
 
 ## XACML Core Elements
-- [X] [Policy Enforcement Point](../My_AdRBAC/src/main/java/app/xacml/pep/My_PEP.java)
-- [X] [Policy Information Point](../My_AdRBAC/src/main/java/app/xacml/pip/My_PIP.java)
-- [X] [Risk Engine](../My_AdRBAC/src/main/java/app/xacml/risk_engine/MyRiskEngine.java)
-- [X] [Policy Decision Point](../My_AdRBAC/src/main/java/app/xacml/pdp/My_PDP.java)
-- [X] [XACML Policy Sets](../My_AdRBAC/src/main/resources/policySet)
+- [X] [Policy Enforcement Point](../src/main/java/app/xacml/pep/My_PEP.java)
+- [X] [Policy Information Point](../src/main/java/app/xacml/pip/My_PIP.java)
+- [X] [Risk Engine](../src/main/java/app/xacml/risk_engine/MyRiskEngine.java)
+- [X] [Policy Decision Point](../src/main/java/app/xacml/pdp/My_PDP.java)
+- [X] [XACML Policy Sets](../src/main/resources/policySet)
 
-## A detailed walk through can be found [Here](Application Walk Through.mp4)
+## A detailed walk through can be found [Here](../src/Application Walk Through.mp4)
